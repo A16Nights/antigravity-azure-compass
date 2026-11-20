@@ -60,12 +60,23 @@ const server = http.createServer(async (req, res) => {
     if (req.method === "GET" && pathname === "/api/state") {
       const cfg = store.getConfig();
       const presets = store.getAllPresets();
+      const session = store.inspectLatestSession();
       sendJson(res, 200, {
         activeId: cfg.activeId,
         perTurnReinforce: cfg.perTurnReinforce,
+        sentinel: cfg.sentinel,
+        session,
         configPath: CONFIG_PATH,
         presets
       });
+      return;
+    }
+
+    if (req.method === "POST" && pathname === "/api/sentinel") {
+      const body = await readBody(req);
+      const sentinel = store.updateSentinel(body);
+      const session = store.inspectLatestSession();
+      sendJson(res, 200, { ok: true, sentinel, session });
       return;
     }
 

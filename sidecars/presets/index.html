@@ -76,8 +76,69 @@
     border: 1px solid var(--border);
     border-radius: 10px;
     padding: 10px 14px;
+    margin-bottom: 12px;
+  }
+  .sentinel-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
     margin-bottom: 18px;
   }
+  .sentinel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .sentinel-controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .sentinel-item label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .sentinel-item input[type="range"] {
+    width: 100%;
+    accent-color: var(--accent);
+  }
+  .sentinel-item select {
+    width: 100%;
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+  .meter-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .meter-bar {
+    flex: 1;
+    height: 6px;
+    background: var(--bg);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .meter-fill {
+    height: 100%;
+    background: var(--accent);
+    transition: width 0.2s ease;
+  }
+  .meter-fill.warn { background: #e0af68; }
+  .meter-fill.critical { background: var(--danger); }
   .toggle-label {
     display: flex;
     align-items: center;
@@ -256,6 +317,38 @@
     <span id="statusText" style="font-size:11px;color:var(--muted);">加载中...</span>
   </div>
 
+  <div class="sentinel-box">
+    <div class="sentinel-head">
+      <label class="toggle-label">
+        <input type="checkbox" id="chkSentinel" />
+        <span><strong>上下文哨兵</strong>（抢在原生乱压缩前主动提醒 /compact 或蓝汐交接）</span>
+      </label>
+      <span id="sentinelBadge" class="badge">监测中</span>
+    </div>
+    <div class="sentinel-controls">
+      <div class="sentinel-item">
+        <label><span>阶段预警线</span><span id="valWarn">55%</span></label>
+        <input type="range" id="rngWarn" min="30" max="85" step="5" value="55" />
+      </div>
+      <div class="sentinel-item">
+        <label><span>红线强提醒</span><span id="valCrit">72%</span></label>
+        <input type="range" id="rngCrit" min="45" max="95" step="1" value="72" />
+      </div>
+      <div class="sentinel-item">
+        <label><span>目标窗口基准</span></label>
+        <select id="selWindow">
+          <option value="128000">128k tokens</option>
+          <option value="200000">200k tokens</option>
+          <option value="256000">256k tokens</option>
+        </select>
+      </div>
+    </div>
+    <div class="meter-wrap">
+      <span id="meterLabel">当前会话估算：--</span>
+      <div class="meter-bar"><div class="meter-fill" id="meterFill" style="width:0%"></div></div>
+    </div>
+  </div>
+
   <div class="section-title">内置</div>
   <div class="grid" id="builtinGrid"></div>
 
@@ -367,6 +460,28 @@ function render() {
   const active = state.presets.find((p) => p.id === state.activeId);
   document.getElementById("statusText").textContent = active ? `当前：${active.name}` : "";
 
+  if (state.sentinel) {
+    document.getElementById("chkSentinel").checked = state.sentinel.enabled !== false;
+    document.getElementById("rngWarn").value = state.sentinel.warnPercent;
+    document.getElementById("valWarn").textContent = state.sentinel.warnPercent + "%";
+    document.getElementById("rngCrit").value = state.sentinel.criticalPercent;
+    document.getElementById("valCrit").textContent = state.sentinel.criticalPercent + "%";
+    document.getElementById("selWindow").value = String(state.sentinel.contextWindowTokens || 200000);
+  }
+  if (state.session) {
+    const s = state.session;
+    const k = Math.round((s.estimatedTokens || 0) / 1000);
+    const maxK = Math.round((s.contextWindowTokens || 200000) / 1000);
+    document.getElementById("meterLabel").textContent = s.found
+      ? `当前会话估算：约 ${k}k / ${maxK}k (${s.percent}%)`
+      : "当前会话估算：暂无活跃记录";
+    const fill = document.getElementById("meterFill");
+    fill.style.width = (s.percent || 0) + "%";
+    fill.className = "meter-fill" + (s.level === "critical" ? " critical" : s.level === "warn" ? " warn" : "");
+    const badge = document.getElementById("sentinelBadge");
+    badge.textContent = s.level === "critical" ? "建议立刻 /compact" : s.level === "warn" ? "接近预警线" : "状态健康";
+  }
+
   const bGrid = document.getElementById("builtinGrid");
   const cGrid = document.getElementById("customGrid");
   bGrid.innerHTML = "";
@@ -426,6 +541,26 @@ document.getElementById("chkReinforce").onchange = async (e) => {
   state.perTurnReinforce = e.target.checked;
   showToast(e.target.checked ? "已开启每轮前置强化" : "已关闭每轮前置强化");
 };
+
+async function saveSentinel() {
+  const payload = {
+    enabled: document.getElementById("chkSentinel").checked,
+    warnPercent: Number(document.getElementById("rngWarn").value),
+    criticalPercent: Number(document.getElementById("rngCrit").value),
+    contextWindowTokens: Number(document.getElementById("selWindow").value)
+  };
+  const res = await api("/api/sentinel", { method: "POST", body: JSON.stringify(payload) });
+  state.sentinel = res.sentinel;
+  state.session = res.session;
+  render();
+  showToast("上下文哨兵设置已保存");
+}
+document.getElementById("chkSentinel").onchange = saveSentinel;
+document.getElementById("rngWarn").oninput = (e) => (document.getElementById("valWarn").textContent = e.target.value + "%");
+document.getElementById("rngCrit").oninput = (e) => (document.getElementById("valCrit").textContent = e.target.value + "%");
+document.getElementById("rngWarn").onchange = saveSentinel;
+document.getElementById("rngCrit").onchange = saveSentinel;
+document.getElementById("selWindow").onchange = saveSentinel;
 
 document.getElementById("btnNew").onclick = () => openModal(null);
 document.getElementById("btnCancel").onclick = closeModal;
