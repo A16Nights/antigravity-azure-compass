@@ -18,6 +18,19 @@
     --accent: #7aa2f7;
     --danger: #f7768e;
   }
+  [data-theme="light"] {
+    --bg: #f4f7fb;
+    --card: #ffffff;
+    --card-hover: #eef4fc;
+    --border: #d5dfec;
+    --border-active: #2f6fed;
+    --text: #1c2434;
+    --muted: #607089;
+    --badge-bg: #e8effa;
+    --badge-active-bg: #d4e3fc;
+    --accent: #2f6fed;
+    --danger: #d93855;
+  }
   * { box-sizing: border-box; }
   body {
     margin: 0;
@@ -60,14 +73,38 @@
     cursor: pointer;
     transition: all 0.15s ease;
   }
-  button:hover {
+  button:hover:not(:disabled) {
     background: var(--card-hover);
-    border-color: #3e4c6e;
+    border-color: var(--accent);
+    transform: translateY(-1px);
+  }
+  button:active:not(:disabled) {
+    transform: scale(0.97);
   }
   button.primary {
-    background: #2b3a5c;
+    background: var(--badge-active-bg);
     border-color: var(--accent);
+    color: var(--text);
   }
+  button.primary:hover:not(:disabled) {
+    background: var(--accent);
+    color: #fff;
+  }
+  .icon-btn {
+    width: 30px;
+    height: 28px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    line-height: 1;
+  }
+  .icon-btn:hover:not(:disabled) { color: var(--accent); }
+  @keyframes spin360 { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  .icon-btn.spinning { animation: spin360 0.65s linear infinite; }
+  select:hover, input[type="text"]:hover, textarea:hover { border-color: var(--accent); }
+  .toggle-label:hover { color: var(--accent); }
   .toolbar {
     display: flex;
     align-items: center;
@@ -306,6 +343,8 @@
     <div class="actions">
       <button id="btnNew">+ 新建预设</button>
       <button id="btnConfig">打开配置文件</button>
+      <button id="btnRefresh" class="icon-btn" title="刷新面板数据">↻</button>
+      <button id="btnTheme" class="icon-btn" title="切换明暗主题">☀️</button>
     </div>
   </div>
 
@@ -362,11 +401,11 @@
       <h2 id="modalTitle">新建自定义预设</h2>
       <div class="field">
         <label>预设 ID（英文/数字）</label>
-        <input id="fId" placeholder="例如：my-code-mode" />
+        <input id="fId" placeholder="例如：xcw-code" />
       </div>
       <div class="field">
         <label>名称</label>
-        <input id="fName" placeholder="例如：专属编码模式" />
+        <input id="fName" placeholder="例如：小仓唯编码模式" />
       </div>
       <div class="field">
         <label>简介</label>
@@ -374,7 +413,7 @@
       </div>
       <div class="field">
         <label>联动 soul-md 人设卡（留空则不切换）</label>
-        <input id="fSoul" placeholder="例如：冷静工程助手" />
+        <input id="fSoul" placeholder="例如：小仓唯 或 冷静工程助手" />
       </div>
       <div class="field">
         <label>每轮注入的底层锚点（PreInvocation 提示词）</label>
@@ -588,6 +627,35 @@ document.getElementById("btnSave").onclick = async () => {
   }
 };
 
+function applyTheme(t) {
+  const mode = t === "light" ? "light" : "dark";
+  if (mode === "light") document.documentElement.setAttribute("data-theme", "light");
+  else document.documentElement.removeAttribute("data-theme");
+  const btn = document.getElementById("btnTheme");
+  if (btn) {
+    btn.textContent = mode === "light" ? "🌙" : "☀️";
+    btn.title = mode === "light" ? "切换到深色主题" : "切换到浅色主题";
+  }
+  try { localStorage.setItem("azure_compass_theme", mode); } catch {}
+}
+
+document.getElementById("btnTheme").onclick = () => {
+  const isLight = document.documentElement.getAttribute("data-theme") === "light";
+  applyTheme(isLight ? "dark" : "light");
+};
+
+document.getElementById("btnRefresh").onclick = async () => {
+  const btn = document.getElementById("btnRefresh");
+  btn.classList.add("spinning");
+  try {
+    await load();
+    showToast("已刷新最新状态");
+  } finally {
+    setTimeout(() => btn.classList.remove("spinning"), 260);
+  }
+};
+
+try { applyTheme(localStorage.getItem("azure_compass_theme") || "dark"); } catch {}
 load();
 </script>
 </body>
