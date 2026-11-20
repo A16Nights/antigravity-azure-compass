@@ -1,0 +1,21 @@
+{
+  "command": "node",
+  "args": ["server.mjs"],
+  "restart_policy": "always",
+  "display_name": "苍蓝罗盘",
+  "description": "苍蓝罗盘（Azure Compass）卡片面板：一键切换预设模式、开关每轮前置强化、联动 soul-md 人设卡、自定义预设。",
+  "has_web_ui": true,
+  "agent_permissions": {
+    "allows_user_interactions": true
+  },
+  "ui_config": {
+    "display_name": "苍蓝罗盘",
+    "views": [
+      {
+        "title": "苍蓝罗盘",
+        "path": "/",
+        "entrypoint": "SIDECAR_UI_ENTRYPOINT_AUX_PANE"
+      }
+    ]
+  }
+}

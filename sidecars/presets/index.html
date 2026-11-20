@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>苍蓝罗盘 · Agent 预设</title>
+<style>
+  :root {
+    --bg: #131722;
+    --card: #1a2030;
+    --card-hover: #21283c;
+    --border: #2a334a;
+    --border-active: #7aa2f7;
+    --text: #e6ecf8;
+    --muted: #8c98b3;
+    --badge-bg: #263047;
+    --badge-active-bg: #3b4b72;
+    --accent: #7aa2f7;
+    --danger: #f7768e;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 20px;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  h1 {
+    margin: 0 0 4px 0;
+    font-size: 18px;
+    font-weight: 600;
+  }
+  .subtitle {
+    color: var(--muted);
+    font-size: 12px;
+    margin: 0;
+  }
+  .actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  button {
+    background: var(--card);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  button:hover {
+    background: var(--card-hover);
+    border-color: #3e4c6e;
+  }
+  button.primary {
+    background: #2b3a5c;
+    border-color: var(--accent);
+  }
+  .toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 18px;
+  }
+  .toggle-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+  .section-title {
+    color: var(--muted);
+    font-size: 12px;
+    margin: 14px 0 10px;
+    font-weight: 500;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 12px;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    min-height: 132px;
+  }
+  .card:hover {
+    background: var(--card-hover);
+  }
+  .card.active {
+    border-color: var(--border-active);
+    box-shadow: 0 0 0 1px rgba(122, 162, 247, 0.35);
+    background: #1d2538;
+  }
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .card-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .card-title {
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .badge {
+    font-size: 11px;
+    padding: 1px 7px;
+    border-radius: 999px;
+    background: var(--badge-bg);
+    color: var(--muted);
+  }
+  .card.active .badge.active-tag {
+    background: var(--badge-active-bg);
+    color: #dbe7ff;
+  }
+  .card-id {
+    font-family: Consolas, monospace;
+    font-size: 11px;
+    color: #6b7897;
+  }
+  .card-desc {
+    color: #b7c2da;
+    font-size: 12px;
+    margin: 0 0 10px 0;
+  }
+  .card-footer {
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding-top: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .card-footer .mini-actions {
+    display: flex;
+    gap: 6px;
+  }
+  .link-btn {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    padding: 2px 4px;
+    font-size: 11px;
+  }
+  .link-btn:hover {
+    background: transparent;
+    color: var(--text);
+  }
+  .link-btn.danger:hover {
+    color: var(--danger);
+  }
+  .toast {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    background: #232c43;
+    border: 1px solid var(--accent);
+    color: var(--text);
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+  .toast.show { opacity: 1; }
+  .modal-mask {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+  .modal-mask.open { display: flex; }
+  .modal {
+    background: #181e2e;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    width: 100%;
+    max-width: 440px;
+    padding: 16px;
+  }
+  .modal h2 { margin: 0 0 12px; font-size: 15px; }
+  .field { margin-bottom: 10px; }
+  .field label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+  .field input, .field textarea {
+    width: 100%;
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 12px;
+    font-family: inherit;
+  }
+  .field textarea { min-height: 76px; resize: vertical; }
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 12px;
+  }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <h1>苍蓝罗盘 · Agent 预设</h1>
+      <p class="subtitle">选择 Agent 的工作方式与底层锚点。切换预设会同步生效于每轮 PreInvocation 钩子，并自动联动 soul-md 人设卡。</p>
+    </div>
+    <div class="actions">
+      <button id="btnNew">+ 新建预设</button>
+      <button id="btnConfig">打开配置文件</button>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <label class="toggle-label">
+      <input type="checkbox" id="chkReinforce" />
+      <span>开启每轮 PreInvocation 前置强化（专治外接模型掉人设 / 忘规则）</span>
+    </label>
+    <span id="statusText" style="font-size:11px;color:var(--muted);">加载中...</span>
+  </div>
+
+  <div class="section-title">内置</div>
+  <div class="grid" id="builtinGrid"></div>
+
+  <div class="section-title">自定义</div>
+  <div class="grid" id="customGrid"></div>
+
+  <div class="toast" id="toast"></div>
+
+  <div class="modal-mask" id="modalMask">
+    <div class="modal">
+      <h2 id="modalTitle">新建自定义预设</h2>
+      <div class="field">
+        <label>预设 ID（英文/数字）</label>
+        <input id="fId" placeholder="例如：my-code-mode" />
+      </div>
+      <div class="field">
+        <label>名称</label>
+        <input id="fName" placeholder="例如：专属编码模式" />
+      </div>
+      <div class="field">
+        <label>简介</label>
+        <input id="fDesc" placeholder="简短说明这个模式的用途" />
+      </div>
+      <div class="field">
+        <label>联动 soul-md 人设卡（留空则不切换）</label>
+        <input id="fSoul" placeholder="例如：冷静工程助手" />
+      </div>
+      <div class="field">
+        <label>每轮注入的底层锚点（PreInvocation 提示词）</label>
+        <textarea id="fAnchor" placeholder="写明核心身份锚或行为强约束..."></textarea>
+      </div>
+      <div class="modal-actions">
+        <button id="btnCancel">取消</button>
+        <button class="primary" id="btnSave">保存</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+let state = { activeId: "", perTurnReinforce: true, presets: [] };
+
+function showToast(msg) {
+  const el = document.getElementById("toast");
+  el.textContent = msg;
+  el.classList.add("show");
+  setTimeout(() => el.classList.remove("show"), 2200);
+}
+
+async function api(path, opts = {}) {
+  const res = await fetch(path, {
+    headers: { "Content-Type": "application/json" },
+    ...opts
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "请求失败");
+  return data;
+}
+
+function renderCard(p) {
+  const isActive = p.id === state.activeId;
+  const card = document.createElement("div");
+  card.className = "card" + (isActive ? " active" : "");
+  card.onclick = () => activatePreset(p.id);
+
+  const badgeText = isActive ? "当前生效" : (p.group === "builtin" ? "内置" : "自定义");
+  const badgeClass = isActive ? "badge active-tag" : "badge";
+
+  card.innerHTML = `
+    <div>
+      <div class="card-top">
+        <div class="card-title-wrap">
+          <span class="card-title">${escapeHtml(p.name)}</span>
+          <span class="${badgeClass}">${badgeText}</span>
+        </div>
+        <span class="card-id">${escapeHtml(p.id)}</span>
+      </div>
+      <p class="card-desc">${escapeHtml(p.description || "")}</p>
+    </div>
+    <div class="card-footer">
+      <span>${p.soulCard ? "联动人设：" + escapeHtml(p.soulCard) : "不改变当前人设"}</span>
+      <div class="mini-actions"></div>
+    </div>
+  `;
+
+  if (p.group === "custom") {
+    const actions = card.querySelector(".mini-actions");
+    const editBtn = document.createElement("button");
+    editBtn.className = "link-btn";
+    editBtn.textContent = "编辑";
+    editBtn.onclick = (e) => { e.stopPropagation(); openModal(p); };
+
+    const delBtn = document.createElement("button");
+    delBtn.className = "link-btn danger";
+    delBtn.textContent = "删除";
+    delBtn.onclick = (e) => { e.stopPropagation(); deletePreset(p.id); };
+
+    actions.appendChild(editBtn);
+    actions.appendChild(delBtn);
+  }
+  return card;
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, (c) => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+}
+
+function render() {
+  document.getElementById("chkReinforce").checked = state.perTurnReinforce;
+  const active = state.presets.find((p) => p.id === state.activeId);
+  document.getElementById("statusText").textContent = active ? `当前：${active.name}` : "";
+
+  const bGrid = document.getElementById("builtinGrid");
+  const cGrid = document.getElementById("customGrid");
+  bGrid.innerHTML = "";
+  cGrid.innerHTML = "";
+
+  for (const p of state.presets) {
+    const el = renderCard(p);
+    if (p.group === "builtin") bGrid.appendChild(el);
+    else cGrid.appendChild(el);
+  }
+}
+
+async function load() {
+  state = await api("/api/state");
+  render();
+}
+
+async function activatePreset(id) {
+  try {
+    const res = await api("/api/activate", { method: "POST", body: JSON.stringify({ id }) });
+    await load();
+    const extra = res.soulSync?.synced ? `（已联动人设：${res.soulSync.card}）` : "";
+    showToast(`已切换到：${res.active.name}${extra}`);
+  } catch (e) {
+    showToast(e.message);
+  }
+}
+
+async function deletePreset(id) {
+  if (!confirm(`确定删除自定义预设「${id}」吗？`)) return;
+  try {
+    await api(`/api/presets/${encodeURIComponent(id)}`, { method: "DELETE" });
+    await load();
+    showToast("已删除预设");
+  } catch (e) {
+    showToast(e.message);
+  }
+}
+
+function openModal(preset = null) {
+  document.getElementById("modalTitle").textContent = preset ? "编辑自定义预设" : "新建自定义预设";
+  document.getElementById("fId").value = preset ? preset.id : "";
+  document.getElementById("fId").disabled = Boolean(preset);
+  document.getElementById("fName").value = preset ? preset.name : "";
+  document.getElementById("fDesc").value = preset ? preset.description : "";
+  document.getElementById("fSoul").value = preset ? (preset.soulCard || "") : "";
+  document.getElementById("fAnchor").value = preset ? (preset.anchor || "") : "";
+  document.getElementById("modalMask").classList.add("open");
+}
+
+function closeModal() {
+  document.getElementById("modalMask").classList.remove("open");
+}
+
+document.getElementById("chkReinforce").onchange = async (e) => {
+  await api("/api/toggle", { method: "POST", body: JSON.stringify({ perTurnReinforce: e.target.checked }) });
+  state.perTurnReinforce = e.target.checked;
+  showToast(e.target.checked ? "已开启每轮前置强化" : "已关闭每轮前置强化");
+};
+
+document.getElementById("btnNew").onclick = () => openModal(null);
+document.getElementById("btnCancel").onclick = closeModal;
+document.getElementById("btnConfig").onclick = async () => {
+  await api("/api/open-config", { method: "POST" });
+  showToast("已打开配置文件");
+};
+document.getElementById("btnSave").onclick = async () => {
+  try {
+    await api("/api/presets", {
+      method: "POST",
+      body: JSON.stringify({
+        id: document.getElementById("fId").value,
+        name: document.getElementById("fName").value,
+        description: document.getElementById("fDesc").value,
+        soulCard: document.getElementById("fSoul").value,
+        anchor: document.getElementById("fAnchor").value
+      })
+    });
+    closeModal();
+    await load();
+    showToast("预设已保存");
+  } catch (e) {
+    showToast(e.message);
+  }
+};
+
+load();
+</script>
+</body>
+</html>
