@@ -1,6 +1,6 @@
 ---
 name: agent-presets
-description: 苍蓝罗盘（Azure Compass）— 仿 DSH 桌面端的 Agent 预设中心：支持一键切换标准/协奏台省流/极简/只读审查/冷静工程等模式，每轮通过 PreInvocation 注入底层锚点并联动 soul-md 人设卡。
+description: 仿 DSH 桌面端的 Agent 预设中心：支持一键切换标准/协奏台省流/极简/创造/冷静工程等模式，每轮通过 PreInvocation 注入底层锚点并联动 soul-md 人设卡。
 ---
 
 # 苍蓝罗盘 · Azure Compass（agent-presets）

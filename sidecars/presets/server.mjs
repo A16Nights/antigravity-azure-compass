@@ -1,4 +1,7 @@
 import { checkGithubUpdate } from "../../lib/update-checker.mjs";
+import { isLeftSidebarEnabled, setLeftSidebarEnabled, listOwnedPluginsNavState, registerSidecarRuntime, refreshAntigravityMcpServers, injectSidebarToggleWidget } from "../../lib/sidebar-nav.mjs";
+import { handleAzureThemeHttp } from "../../lib/azure-theme.mjs";
+import { injectAzureUiKit } from "../../lib/azure-ui-kit.mjs";
 import http from "node:http";
 import fs from "node:fs";
 import path from "node:path";
@@ -62,10 +65,35 @@ const server = http.createServer(async (req, res) => {
     if (req.method === "GET" && (pathname === "/" || pathname === "/index.html")) {
       const html = fs.readFileSync(INDEX_HTML, "utf8");
       res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
-      res.end(html);
+      res.end(injectAzureUiKit(injectSidebarToggleWidget(html, "agent-presets"), "agent-presets"));
       return;
     }
 
+    if (await handleAzureThemeHttp(req, res)) return;
+    if (req.method === "GET" && pathname === "/api/sidebar-nav") {
+      sendJson(res, 200, {
+        ok: true,
+        pluginId: "agent-presets",
+        showInLeftSidebar: isLeftSidebarEnabled("agent-presets"),
+        plugins: listOwnedPluginsNavState()
+      });
+      return;
+    }
+    if (req.method === "POST" && pathname === "/api/sidebar-nav") {
+      const body = await readBody(req);
+      const targetId = String(body.pluginId || "agent-presets").trim();
+      const nextVal = Boolean(body.showInLeftSidebar);
+      setLeftSidebarEnabled(targetId, nextVal);
+      const rf = await refreshAntigravityMcpServers();
+      sendJson(res, 200, {
+        ok: true,
+        pluginId: targetId,
+        showInLeftSidebar: nextVal,
+        refreshed: Boolean(rf?.ok),
+        plugins: listOwnedPluginsNavState()
+      });
+      return;
+    }
     if (req.method === "GET" && pathname === "/api/state") {
       const cfg = store.getConfig();
       const presets = store.getAllPresets();
@@ -75,6 +103,7 @@ const server = http.createServer(async (req, res) => {
         perTurnReinforce: cfg.perTurnReinforce,
         sentinel: cfg.sentinel,
         session,
+        sentinelSignal: store.loadSentinelSignal(),
         configPath: CONFIG_PATH,
         presets
       });
@@ -86,6 +115,13 @@ const server = http.createServer(async (req, res) => {
       const sentinel = store.updateSentinel(body);
       const session = store.inspectLatestSession();
       sendJson(res, 200, { ok: true, sentinel, session });
+      return;
+    }
+
+    // 重置熔断：清 pending / failCount / lastError，保留 conversationId 与提炼进度
+    if (req.method === "POST" && pathname === "/api/sentinel/reset") {
+      store.resetSentinelBreaker();
+      sendJson(res, 200, { ok: true, sentinelSignal: store.loadSentinelSignal() });
       return;
     }
 
@@ -131,6 +167,13 @@ const server = http.createServer(async (req, res) => {
 
 server.listen(PORT, "127.0.0.1", () => {
   console.log(`[agent-presets] sidecar listening on http://127.0.0.1:${PORT}`);
+  try {
+    const __a = server.address();
+    const __p = (__a && typeof __a === "object" && __a.port) ? __a.port : Number(PORT) || 0;
+    const __t = (process.env.ANTIGRAVITY_SIDECAR_UI_TOKEN || process.env.ANTIGRAVITY_SIDECAR_AUTH_TOKEN || process.env.ANTIGRAVITY_SIDECAR_WEB_TOKEN || "").trim();
+    const __u = __t ? `http://127.0.0.1:${__p}/?token=${encodeURIComponent(__t)}` : `http://127.0.0.1:${__p}/`;
+    registerSidecarRuntime("agent-presets", { port: __p, url: __u });
+  } catch {}
 });
 
 function shutdown() {

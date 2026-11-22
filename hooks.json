@@ -13,6 +13,13 @@
         "command": "node ./hooks/pre-invocation.mjs",
         "timeout": 5
       }
+    ],
+    "Stop": [
+      {
+        "type": "command",
+        "command": "node ./hooks/stop.mjs",
+        "timeout": 25
+      }
     ]
   }
 }

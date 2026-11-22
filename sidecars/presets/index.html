@@ -90,6 +90,16 @@
     background: var(--accent);
     color: #fff;
   }
+  button.danger-btn {
+    background: rgba(247, 118, 142, 0.16);
+    border-color: var(--danger);
+    color: var(--danger);
+  }
+  button.danger-btn:hover:not(:disabled) {
+    background: var(--danger);
+    border-color: var(--danger);
+    color: #fff;
+  }
   .icon-btn {
     width: 30px;
     height: 28px;
@@ -209,6 +219,35 @@
   .card:hover {
     background: var(--card-hover);
   }
+  .card.card-add {
+    border: 1.5px dashed var(--border);
+    background: transparent;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 6px;
+    color: var(--muted);
+  }
+  .card.card-add:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(122, 162, 247, 0.06);
+    transform: translateY(-1px);
+  }
+  .card-add-icon {
+    font-size: 24px;
+    line-height: 1;
+    font-weight: 400;
+  }
+  .card-add-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: inherit;
+  }
+  .card-add-desc {
+    font-size: 11px;
+    color: var(--muted);
+  }
   .card.active {
     border-color: var(--border-active);
     box-shadow: 0 0 0 1px rgba(122, 162, 247, 0.35);
@@ -297,7 +336,9 @@
   .modal-mask {
     position: fixed;
     inset: 0;
+    z-index: 9000;
     background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(4px);
     display: none;
     align-items: center;
     justify-content: center;
@@ -305,12 +346,35 @@
   }
   .modal-mask.open { display: flex; }
   .modal {
-    background: #181e2e;
+    background: var(--card, #181e2e);
     border: 1px solid var(--border);
     border-radius: 12px;
     width: 100%;
     max-width: 440px;
     padding: 16px;
+    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.42);
+  }
+  .modal.confirm-modal { max-width: 390px; }
+  .confirm-desc {
+    margin: 0 0 8px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text);
+  }
+  .confirm-note {
+    margin: 0 0 4px;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .confirm-warn {
+    margin: 8px 0 0;
+    padding: 7px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    color: #e0af68;
+    background: rgba(224, 175, 104, 0.12);
+    border: 1px solid rgba(224, 175, 104, 0.32);
   }
   .modal h2 { margin: 0 0 12px; font-size: 15px; }
   .field { margin-bottom: 10px; }
@@ -341,7 +405,6 @@
       <p class="subtitle">选择 Agent 的工作方式与底层锚点。切换预设会同步生效于每轮 PreInvocation 钩子，并自动联动 soul-md 人设卡。</p>
     </div>
     <div class="actions">
-      <button id="btnNew">+ 新建预设</button>
       <button id="btnConfig">打开配置文件</button>
       <button id="btnRefresh" class="icon-btn" title="刷新面板数据">↻</button>
       <button id="btnTheme" class="icon-btn" title="切换明暗主题">☀️</button>
@@ -351,7 +414,7 @@
   <div class="toolbar">
     <label class="toggle-label">
       <input type="checkbox" id="chkReinforce" />
-      <span>开启每轮 PreInvocation 前置强化（专治外接模型掉人设 / 忘规则）</span>
+      <span>开启每轮 PreInvocation 前置强化（仅对外接模型生效，Antigravity内部模型自动跳过）</span>
     </label>
     <span id="statusText" style="font-size:11px;color:var(--muted);">加载中...</span>
   </div>
@@ -360,7 +423,7 @@
     <div class="sentinel-head">
       <label class="toggle-label">
         <input type="checkbox" id="chkSentinel" />
-        <span><strong>上下文哨兵</strong>（抢在原生乱压缩前主动提醒 /compact 或蓝汐交接）</span>
+        <span><strong>上下文监测</strong>（抢在原生乱压缩前主动提醒 /compact 或蓝汐交接）</span>
       </label>
       <span id="sentinelBadge" class="badge">监测中</span>
     </div>
@@ -386,6 +449,20 @@
       <span id="meterLabel">当前会话估算：--</span>
       <div class="meter-bar"><div class="meter-fill" id="meterFill" style="width:0%"></div></div>
     </div>
+    <div class="sentinel-controls" style="margin-top:10px;">
+      <label class="toggle-label">
+        <input type="checkbox" id="chkAutoCompact" />
+        <span>自动 /compact 压缩（红线时由 Stop hook 派发）</span>
+      </label>
+      <label class="toggle-label">
+        <input type="checkbox" id="chkAutoExtract" />
+        <span>自动提炼入蓝汐（压缩前沉淀增量记忆）</span>
+      </label>
+    </div>
+    <div class="meter-wrap" style="margin-top:8px;align-items:center;">
+      <span id="sentinelSignalText" style="flex:1;">监测信号：暂无记录</span>
+      <button id="btnResetBreaker" style="flex-shrink:0;">重置熔断</button>
+    </div>
   </div>
 
   <div class="section-title">内置</div>
@@ -394,6 +471,17 @@
   <div class="section-title">自定义</div>
   <div class="grid" id="customGrid"></div>
 
+  <div class="sentinel-box" style="margin-top:14px;">
+    <div class="sentinel-head">
+      <div style="font-weight:600;font-size:13px;">苍蓝套件 · 左侧栏入口管理</div>
+      <span id="sidebarNavSummary" class="badge">加载中</span>
+    </div>
+    <div style="font-size:11.5px;color:var(--muted);margin-bottom:8px;">
+      统一控制苍蓝系列插件是否在 Antigravity 左侧栏显示快捷入口（关闭后仍可在右侧栏正常打开）。
+    </div>
+    <div id="sidebarNavList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px;"></div>
+  </div>
+
   <div class="toast" id="toast"></div>
 
   <div class="modal-mask" id="modalMask">
@@ -401,11 +489,11 @@
       <h2 id="modalTitle">新建自定义预设</h2>
       <div class="field">
         <label>预设 ID（英文/数字）</label>
-        <input id="fId" placeholder="例如：xcw-code" />
+        <input id="fId" placeholder="例如：custom-code" />
       </div>
       <div class="field">
         <label>名称</label>
-        <input id="fName" placeholder="例如：小仓唯编码模式" />
+        <input id="fName" placeholder="例如：代码审查模式" />
       </div>
       <div class="field">
         <label>简介</label>
@@ -413,7 +501,7 @@
       </div>
       <div class="field">
         <label>联动 soul-md 人设卡（留空则不切换）</label>
-        <input id="fSoul" placeholder="例如：小仓唯 或 冷静工程助手" />
+        <input id="fSoul" placeholder="例如：默认工程助手 或 冷静工程助手" />
       </div>
       <div class="field">
         <label>每轮注入的底层锚点（PreInvocation 提示词）</label>
@@ -422,6 +510,19 @@
       <div class="modal-actions">
         <button id="btnCancel">取消</button>
         <button class="primary" id="btnSave">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-mask" id="confirmModalMask">
+    <div class="modal confirm-modal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+      <h2 id="confirmTitle">确认删除自定义预设</h2>
+      <p class="confirm-desc" id="confirmDesc"></p>
+      <p class="confirm-note">删除后将从配置文件中永久移除，无法撤销。</p>
+      <p class="confirm-warn" id="confirmActiveWarn" style="display:none;">该预设当前正在生效，删除后将自动切回「标准模式」。</p>
+      <div class="modal-actions">
+        <button id="btnConfirmCancel">取消</button>
+        <button class="danger-btn" id="btnConfirmOk">确认删除</button>
       </div>
     </div>
   </div>
@@ -482,7 +583,7 @@ function renderCard(p) {
     const delBtn = document.createElement("button");
     delBtn.className = "link-btn danger";
     delBtn.textContent = "删除";
-    delBtn.onclick = (e) => { e.stopPropagation(); deletePreset(p.id); };
+    delBtn.onclick = (e) => { e.stopPropagation(); deletePreset(p); };
 
     actions.appendChild(editBtn);
     actions.appendChild(delBtn);
@@ -494,10 +595,34 @@ function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, (c) => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
 }
 
+function renderSentinelSignal() {
+  const el = document.getElementById("sentinelSignalText");
+  if (!el) return;
+  const sig = state.sentinelSignal;
+  if (!sig) {
+    el.textContent = "监测信号：暂无记录";
+    el.style.color = "var(--muted)";
+    return;
+  }
+  const parts = [];
+  parts.push(sig.compactedAt ? `最近压缩：${String(sig.compactedAt).replace("T", " ").slice(0, 19)}` : "最近压缩：尚未执行");
+  if (sig.needCompact) {
+    parts.push(sig.pendingAt ? "待压缩：已派发，等待结算" : "待压缩：已标记待压缩");
+  } else {
+    parts.push("待压缩：无");
+  }
+  const failCount = Math.max(0, Number(sig.failCount) || 0);
+  parts.push(`失败熔断：${failCount} 次`);
+  if (sig.lastError) parts.push(`最近错误：${sig.lastError}`);
+  el.textContent = "监测信号 · " + parts.join("　|　");
+  el.style.color = failCount > 0 ? "var(--danger)" : "var(--muted)";
+}
+
 function render() {
   document.getElementById("chkReinforce").checked = state.perTurnReinforce;
   const active = state.presets.find((p) => p.id === state.activeId);
   document.getElementById("statusText").textContent = active ? `当前：${active.name}` : "";
+  try { window.AzureTone?.applySeed(active ? (active.soulCard || active.id || active.name) : "standard"); } catch {}
 
   if (state.sentinel) {
     document.getElementById("chkSentinel").checked = state.sentinel.enabled !== false;
@@ -506,7 +631,10 @@ function render() {
     document.getElementById("rngCrit").value = state.sentinel.criticalPercent;
     document.getElementById("valCrit").textContent = state.sentinel.criticalPercent + "%";
     document.getElementById("selWindow").value = String(state.sentinel.contextWindowTokens || 200000);
+    document.getElementById("chkAutoCompact").checked = state.sentinel.autoCompactEnabled === true;
+    document.getElementById("chkAutoExtract").checked = state.sentinel.autoExtractToLingshu !== false;
   }
+  renderSentinelSignal();
   if (state.session) {
     const s = state.session;
     const k = Math.round((s.estimatedTokens || 0) / 1000);
@@ -531,6 +659,20 @@ function render() {
     if (p.group === "builtin") bGrid.appendChild(el);
     else cGrid.appendChild(el);
   }
+
+  const addCard = document.createElement("div");
+  addCard.id = "btnNew";
+  addCard.className = "card card-add";
+  addCard.setAttribute("role", "button");
+  addCard.setAttribute("tabindex", "0");
+  addCard.innerHTML = `
+    <div class="card-add-icon">+</div>
+    <div class="card-add-title">新建预设</div>
+    <div class="card-add-desc">点击添加自定义模式</div>
+  `;
+  addCard.onclick = () => openModal(null);
+  addCard.onkeydown = (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openModal(null); } };
+  cGrid.appendChild(addCard);
 }
 
 async function load() {
@@ -549,16 +691,69 @@ async function activatePreset(id) {
   }
 }
 
-async function deletePreset(id) {
-  if (!confirm(`确定删除自定义预设「${id}」吗？`)) return;
+let pendingDeletePreset = null;
+
+function openDeleteConfirm(preset) {
+  pendingDeletePreset = preset;
+  const label = preset?.name ? `${preset.name}（${preset.id}）` : String(preset?.id || "");
+  document.getElementById("confirmDesc").textContent = `确定要删除自定义预设「${label}」吗？`;
+  const activeWarn = document.getElementById("confirmActiveWarn");
+  if (activeWarn) {
+    activeWarn.style.display = preset?.id === state.activeId ? "block" : "none";
+  }
+  const okBtn = document.getElementById("btnConfirmOk");
+  if (okBtn) {
+    okBtn.disabled = false;
+    okBtn.textContent = "确认删除";
+  }
+  document.getElementById("confirmModalMask").classList.add("open");
+}
+
+function closeDeleteConfirm() {
+  pendingDeletePreset = null;
+  document.getElementById("confirmModalMask").classList.remove("open");
+}
+
+async function deletePreset(presetOrId) {
+  const preset = typeof presetOrId === "string"
+    ? (state.presets.find((p) => p.id === presetOrId) || { id: presetOrId, name: presetOrId })
+    : presetOrId;
+  if (!preset?.id) return;
+  openDeleteConfirm(preset);
+}
+
+async function executeDeletePreset() {
+  const target = pendingDeletePreset;
+  if (!target?.id) return;
+  const okBtn = document.getElementById("btnConfirmOk");
+  if (okBtn) {
+    okBtn.disabled = true;
+    okBtn.textContent = "删除中...";
+  }
   try {
-    await api(`/api/presets/${encodeURIComponent(id)}`, { method: "DELETE" });
+    await api(`/api/presets/${encodeURIComponent(target.id)}`, { method: "DELETE" });
+    closeDeleteConfirm();
     await load();
-    showToast("已删除预设");
+    showToast(`已删除预设：${target.name || target.id}`);
   } catch (e) {
-    showToast(e.message);
+    if (okBtn) {
+      okBtn.disabled = false;
+      okBtn.textContent = "确认删除";
+    }
+    showToast(e.message || "删除失败");
   }
 }
+
+document.getElementById("btnConfirmCancel").onclick = closeDeleteConfirm;
+document.getElementById("btnConfirmOk").onclick = executeDeletePreset;
+document.getElementById("confirmModalMask").onclick = (e) => {
+  if (e.target && e.target.id === "confirmModalMask") closeDeleteConfirm();
+};
+window.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && document.getElementById("confirmModalMask").classList.contains("open")) {
+    closeDeleteConfirm();
+  }
+});
 
 function openModal(preset = null) {
   document.getElementById("modalTitle").textContent = preset ? "编辑自定义预设" : "新建自定义预设";
@@ -586,22 +781,96 @@ async function saveSentinel() {
     enabled: document.getElementById("chkSentinel").checked,
     warnPercent: Number(document.getElementById("rngWarn").value),
     criticalPercent: Number(document.getElementById("rngCrit").value),
-    contextWindowTokens: Number(document.getElementById("selWindow").value)
+    contextWindowTokens: Number(document.getElementById("selWindow").value),
+    autoCompactEnabled: document.getElementById("chkAutoCompact").checked,
+    autoExtractToLingshu: document.getElementById("chkAutoExtract").checked
   };
   const res = await api("/api/sentinel", { method: "POST", body: JSON.stringify(payload) });
   state.sentinel = res.sentinel;
   state.session = res.session;
   render();
-  showToast("上下文哨兵设置已保存");
+  showToast("上下文监测设置已保存");
 }
 document.getElementById("chkSentinel").onchange = saveSentinel;
+document.getElementById("chkAutoCompact").onchange = saveSentinel;
+document.getElementById("chkAutoExtract").onchange = saveSentinel;
 document.getElementById("rngWarn").oninput = (e) => (document.getElementById("valWarn").textContent = e.target.value + "%");
 document.getElementById("rngCrit").oninput = (e) => (document.getElementById("valCrit").textContent = e.target.value + "%");
 document.getElementById("rngWarn").onchange = saveSentinel;
 document.getElementById("rngCrit").onchange = saveSentinel;
 document.getElementById("selWindow").onchange = saveSentinel;
+document.getElementById("btnResetBreaker").onclick = async () => {
+  try {
+    const res = await api("/api/sentinel/reset", { method: "POST" });
+    state.sentinelSignal = res.sentinelSignal;
+    renderSentinelSignal();
+    showToast("已重置上下文监测熔断状态");
+  } catch (e) {
+    showToast(e.message);
+  }
+};
 
-document.getElementById("btnNew").onclick = () => openModal(null);
+let sidebarNavPlugins = [];
+function renderSidebarNavList() {
+  const box = document.getElementById("sidebarNavList");
+  const summary = document.getElementById("sidebarNavSummary");
+  if (!box) return;
+  const onCount = sidebarNavPlugins.filter((p) => p.showInLeftSidebar).length;
+  if (summary) summary.textContent = `${onCount}/${sidebarNavPlugins.length} 已显示`;
+  box.innerHTML = sidebarNavPlugins.map((p) => `
+    <label style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 10px;border-radius:8px;border:1px solid var(--border);background:var(--panel-2,rgba(128,128,128,0.08));cursor:pointer;">
+      <div style="min-width:0;">
+        <div style="font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(p.title)}</div>
+        <div style="font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(p.desc || p.id)}</div>
+      </div>
+      <input type="checkbox" data-sb-plugin="${escapeHtml(p.id)}" ${p.showInLeftSidebar ? "checked" : ""} style="width:auto;cursor:pointer;flex-shrink:0;" />
+    </label>
+  `).join("");
+  box.querySelectorAll("input[data-sb-plugin]").forEach((chk) => {
+    chk.onchange = async () => {
+      const pid = chk.getAttribute("data-sb-plugin");
+      const next = chk.checked;
+      chk.disabled = true;
+      try {
+        const res = await api("/api/sidebar-nav", {
+          method: "POST",
+          body: JSON.stringify({ pluginId: pid, showInLeftSidebar: next })
+        });
+        sidebarNavPlugins = res.plugins || sidebarNavPlugins;
+        renderSidebarNavList();
+        if (pid === "agent-presets") {
+          const topBtn = document.getElementById("agy-sb-btn");
+          if (topBtn) {
+            topBtn.classList.toggle("is-on", next);
+            topBtn.textContent = next ? "左侧栏: 开" : "左侧栏: 关";
+          }
+        }
+        showToast((next ? "已开启" : "已隐藏") + "左侧栏按钮" + (res.refreshed ? "（已通知刷新，未变化时按 Ctrl+R）" : "（按 Ctrl+R 生效）"));
+      } catch (e) {
+        chk.checked = !next;
+        showToast("切换失败：" + e.message);
+      } finally {
+        chk.disabled = false;
+      }
+    };
+  });
+}
+
+async function loadSidebarNavList() {
+  try {
+    const res = await api("/api/sidebar-nav");
+    sidebarNavPlugins = res.plugins || [];
+    renderSidebarNavList();
+  } catch (e) {
+    const summary = document.getElementById("sidebarNavSummary");
+    const box = document.getElementById("sidebarNavList");
+    if (summary) summary.textContent = "待重启生效";
+    if (box) box.innerHTML = `<div style="font-size:12px;color:var(--muted);">后台服务尚未加载新接口（${escapeHtml(e?.message || "请重启 Antigravity 或重载插件")}）</div>`;
+  }
+}
+window.addEventListener("agy-sidebar-nav-changed", () => loadSidebarNavList());
+loadSidebarNavList();
+
 document.getElementById("btnCancel").onclick = closeModal;
 document.getElementById("btnConfig").onclick = async () => {
   await api("/api/open-config", { method: "POST" });
