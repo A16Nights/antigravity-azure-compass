@@ -2,9 +2,9 @@
   "$schema": "https://antigravity.google/schemas/v1/plugin.json",
   "name": "agent-presets",
   "displayName": "苍蓝罗盘",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "logo": "assets/logo.svg",
-  "description": "苍蓝罗盘（Azure Compass）— 仿 DSH 桌面端的 Agent 预设管理插件：提供标准/协奏台省流/极简/只读审查等预设模式与上下文监测，通过 SessionStart + PreInvocation 钩子每轮强化核心行为与身份锚，并联动 soul-md 人设卡。",
+  "description": "苍蓝罗盘（Azure Compass）— Antigravity 工作模式预设中心与上下文监测插件：内置标准/协奏台省流/极简/只读审查 4 套模式，支持自定义预设增删改、Soul.md 人设卡联动、外接模型智能识别每轮防掉线强化、上下文 Token 水位实时监测与自动/手动 /compact 压缩联动，以及苍蓝套件左侧栏快捷入口统一管理。",
   "suggestedPrompts": [
     "打开苍蓝罗盘面板",
     "切换到协奏台省流模式",
