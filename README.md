@@ -21,7 +21,7 @@
 </p>
 
 <p>
-  <a href="#features">✨ 功能全景</a> &nbsp;·&nbsp; <a href="#architecture">🧩 工作原理</a> &nbsp;·&nbsp; <a href="#installation">🚀 快速安装</a> &nbsp;·&nbsp; <a href="#storage">📂 数据存储</a> &nbsp;·&nbsp; <a href="#azure-suite">🌌 苍蓝全家桶</a>
+  <a href="#preview">🖼️ 界面预览</a> &nbsp;·&nbsp; <a href="#features">✨ 功能全景</a> &nbsp;·&nbsp; <a href="#architecture">🧩 工作原理</a> &nbsp;·&nbsp; <a href="#installation">🚀 快速安装</a> &nbsp;·&nbsp; <a href="#storage">📂 数据存储</a> &nbsp;·&nbsp; <a href="#azure-suite">🌌 苍蓝全家桶</a>
 </p>
 
 </div>
@@ -50,6 +50,19 @@
 </td>
 </tr>
 </table>
+
+<h2 id="preview">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/readme/sec-preview-dark.svg">
+  <img src="assets/readme/sec-preview-light.svg" alt="界面预览" width="100%">
+</picture>
+</h2>
+
+<p align="center">
+  <a href="assets/readme/preview-panel.png"><img src="assets/readme/preview-panel.png" alt="苍蓝罗盘控制面板预览" width="90%"></a>
+  <br><strong>苍蓝罗盘 · Agent 预设中心、上下文水位监测与苍蓝套件左侧栏总控</strong>
+  <br><sub>外接模型智能前置强化开关、55%/72% 双阈值自动 /compact、4 套内置 + 自定义预设卡片与 8 插件左侧栏统一开关</sub>
+</p>
 
 <h2 id="features">
 <picture>

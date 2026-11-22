@@ -21,7 +21,7 @@
 </p>
 
 <p>
-  <a href="#features">✨ Features</a> &nbsp;·&nbsp; <a href="#architecture">🧩 Architecture</a> &nbsp;·&nbsp; <a href="#installation">🚀 Quick Start</a> &nbsp;·&nbsp; <a href="#storage">📂 Storage</a> &nbsp;·&nbsp; <a href="#azure-suite">🌌 Azure Suite</a>
+  <a href="#preview">🖼️ Preview</a> &nbsp;·&nbsp; <a href="#features">✨ Features</a> &nbsp;·&nbsp; <a href="#architecture">🧩 Architecture</a> &nbsp;·&nbsp; <a href="#installation">🚀 Quick Start</a> &nbsp;·&nbsp; <a href="#storage">📂 Storage</a> &nbsp;·&nbsp; <a href="#azure-suite">🌌 Azure Suite</a>
 </p>
 
 </div>
@@ -50,6 +50,19 @@ Lists all installed Azure Suite plugins in one place and lets you toggle each pl
 </td>
 </tr>
 </table>
+
+<h2 id="preview">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/readme/sec-preview-en-dark.svg">
+  <img src="assets/readme/sec-preview-en-light.svg" alt="Interface Preview" width="100%">
+</picture>
+</h2>
+
+<p align="center">
+  <a href="assets/readme/preview-panel.png"><img src="assets/readme/preview-panel.png" alt="Azure Compass Panel Preview" width="90%"></a>
+  <br><strong>Azure Compass · Mode Presets, Live Context Telemetry &amp; Suite Sidebar Hub</strong>
+  <br><sub>External-model PreInvocation toggle, 55%/72% auto /compact monitor, built-in &amp; custom presets, and 8-plugin sidebar toggles</sub>
+</p>
 
 <h2 id="features">
 <picture>
