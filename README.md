@@ -1,12 +1,62 @@
-# 苍蓝罗盘 · Azure Compass (`antigravity-azure-compass`)
+<div align="center">
 
-面向 **Google Antigravity** 的 Agent 工作模式预设中心、上下文水位实时监测与苍蓝套件全局入口管理插件。
+<p>🌐 &nbsp; <strong>简体中文</strong> &nbsp;·&nbsp; <a href="README.en.md">English</a></p>
 
-通过 **静态规则（`rules/AGENTS.md`）+ 生命周期钩子（`SessionStart` + `PreInvocation`）+ 可视化侧栏面板（Sidecar + 独立 Web UI）**，为不同开发场景提供一键切换的 Agent 行为模式，精准解决长会话或外接 API 模型（如苍蓝星轨挂载模型）指令漂移、掉人设问题，并与 **[苍蓝魂匣（Soul.md）](https://github.com/A16Nights/antigravity-soul-md)**、**[蓝汐（Lanxi Memory）](https://github.com/A16Nights/antigravity-lanxi-memory)** 及 Antigravity 原生 `/compact` 深度联动。
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/readme/hero-dark.svg">
+  <img src="assets/readme/hero-light.svg" alt="苍蓝罗盘 · Azure Compass" width="100%">
+</picture>
 
----
+<p>
+  [![Release](https://img.shields.io/github/v/release/A16Nights/antigravity-azure-compass?style=flat-square&label=Release&color=60a5fa&labelColor=1e293b)](https://github.com/A16Nights/antigravity-azure-compass/releases)
+  [![Stars](https://img.shields.io/github/stars/A16Nights/antigravity-azure-compass?style=flat-square&label=Stars&color=f59e0b&labelColor=1e293b)](https://github.com/A16Nights/antigravity-azure-compass/stargazers)
+  ![Antigravity](https://img.shields.io/badge/Google_Antigravity-Native_Plugin-60a5fa?style=flat-square&labelColor=1e293b)
+  ![Node.js](https://img.shields.io/badge/Node.js-%3E%3D22.0.0-10b981?style=flat-square&labelColor=1e293b)
+  ![Zero Deps](https://img.shields.io/badge/Dependencies-Zero-06b6d4?style=flat-square&labelColor=1e293b)
+  [![License](https://img.shields.io/badge/License-MIT-6366f1?style=flat-square&labelColor=1e293b)](./LICENSE)
+</p>
 
-## ✨ 功能全景
+<p>
+  <strong>一键切换 Agent 工作模式预设 · 上下文水位实时监测与自动 /compact · 苍蓝套件左侧栏全局入口总控</strong>
+</p>
+
+<p>
+  <a href="#features">✨ 功能全景</a> &nbsp;·&nbsp; <a href="#architecture">🧩 工作原理</a> &nbsp;·&nbsp; <a href="#installation">🚀 快速安装</a> &nbsp;·&nbsp; <a href="#storage">📂 数据存储</a> &nbsp;·&nbsp; <a href="#azure-suite">🌌 苍蓝全家桶</a>
+</p>
+
+</div>
+
+面向 **Google Antigravity** 的 Agent 工作模式预设中心、上下文水位实时监测与苍蓝套件全局入口管理插件。通过 **静态规则（`rules/AGENTS.md`）+ 生命周期钩子（`SessionStart` + `PreInvocation`）+ 可视化侧栏面板**，精准解决长会话或外接模型指令漂移、掉人设问题，并与 **[苍蓝魂匣（Soul.md）](https://github.com/A16Nights/antigravity-soul-md)**、**[蓝汐（Lanxi Memory）](https://github.com/A16Nights/antigravity-lanxi-memory)** 及原生 `/compact` 深度联动。
+
+<table>
+<tr>
+<td width="50%" valign="top">
+<h4>🧭 4 套内置 + 无限自定义预设</h4>
+内置 <code>standard</code> / <code>orchestrator</code> / <code>minimal</code> / <code>review</code>，支持自由新建、编辑与安全删除自定义模式，并联动 <code>soul-md</code> 自动切人设。
+</td>
+<td width="50%" valign="top">
+<h4>🛡️ 外接模型智能双通道防掉线</h4>
+内置 <code>external-model-guard</code>：仅在当前主模型为外接自定义模型时每轮注入前置锚点，原生模型自动跳过、零额外 Token 损耗。
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+<h4>📈 上下文水位监测与自动 /compact</h4>
+实时读取活跃会话 <code>transcript.jsonl</code> 估算 Token 占比，提供 55%/72% 两级预警与一键/红线自动触发原生 <code>/compact</code> 压缩。
+</td>
+<td width="50%" valign="top">
+<h4>🎛️ 苍蓝套件左侧栏入口总控</h4>
+集中管理本机已安装的 8 款苍蓝系列插件，一键单独开关任意插件在 Antigravity 左侧栏的全局快捷入口。
+</td>
+</tr>
+</table>
+
+<h2 id="features">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/readme/sec-features-dark.svg">
+  <img src="assets/readme/sec-features-light.svg" alt="功能全景" width="100%">
+</picture>
+</h2>
 
 ### 1. 内置 4 套核心工作模式预设
 - **`standard`（标准模式）**：均衡的日常软件工程、文件读写、命令执行与资料整理模式。
@@ -44,16 +94,43 @@
 
 ### 6. 苍蓝统一视觉与交互体系
 - **Neko Glass 毛玻璃界面**：支持深色 / 浅色明暗双主题切换、自定义毛玻璃下拉框（`AzureSelect`）与 7px 细圆角滚动条。
-- **跨插件共享「苍蓝主题色调中心」**：内置 6 套官方主题预设（苍蓝星辉、霓虹幻紫、薄荷青岚、绯樱珊瑚、琥珀流金、极光翠影）、自定义主副双色取色器及 4 个自定义保存栏位，一处切换全套件实时同步。
+- **跨插件共享「苍蓝主题色调中心」**：内置 6 套官方主题预设、自定义主副双色取色器及 4 个自定义保存栏位，一处切换全套件实时同步。
 - **独立 Web UI & 在线更新检查**：点击顶栏 `Web UI` 即可在系统默认浏览器全屏打开；点击顶栏版本号徽章可实时对比 GitHub Release 最新版本。
 
----
+<h2 id="architecture">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/readme/sec-arch-dark.svg">
+  <img src="assets/readme/sec-arch-light.svg" alt="工作原理与架构" width="100%">
+</picture>
+</h2>
 
-## 🚀 安装方式
+```mermaid
+flowchart TD
+  A["苍蓝罗盘 Sidecar 面板"] -->|"切换预设"| B["原子写入 rules/AGENTS.md"]
+  A -.->|"绑定联动"| S["苍蓝魂匣 Soul.md 切人设"]
+  A -->|"统一开关"| N["~/.gemini/azure-sidebar-nav.json<br/>8 插件左侧栏入口控制"]
+  H["SessionStart / PreInvocation Hook"] -->|"external-model-guard"| M{"当前是否外接模型?"}
+  M -->|"是"| I["注入每轮核心锚点"]
+  M -->|"否（原生模型）"| K["跳过重复注入 · 零开销"]
+  T["活跃会话 transcript.jsonl"] -->|"水位估算 55% / 72%"| C["一键或红线自动触发 /compact"]
+```
 
-> 前置要求：**Node.js >= 22.0.0**（零第三方 npm 依赖，纯 Node.js 原生 ESM 实现）。
+<h2 id="installation">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/readme/sec-install-dark.svg">
+  <img src="assets/readme/sec-install-light.svg" alt="快速安装与上手" width="100%">
+</picture>
+</h2>
 
-将本仓库克隆或复制到 Antigravity 全局插件目录（目录名固定为 `agent-presets`）：
+> **前置要求**：**Node.js >= 22.0.0**（零第三方 npm 运行时依赖，纯 Node.js 原生 ESM 实现）。
+
+### 方式一 · 一句话让 Antigravity 帮你自动安装（推荐）
+
+直接把下面这句话发给 Antigravity 即可自动完成克隆与核验：
+
+> 帮我把 `https://github.com/A16Nights/antigravity-azure-compass.git` 克隆到本机 Antigravity 全局插件目录，目录名设为 `agent-presets`，检查目录无误后告诉我，我再按 `Ctrl+R` 重载生效。
+
+### 方式二 · 命令行手动克隆
 
 ```powershell
 # Windows (PowerShell)
@@ -65,18 +142,50 @@ git clone https://github.com/A16Nights/antigravity-azure-compass.git ~/.gemini/c
 
 重启或重载 Antigravity（`Ctrl+R`），在 **Plugins** 面板确认 **苍蓝罗盘** 已启用，即可从左侧栏或右侧辅助面板打开。
 
----
+<h2 id="storage">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/readme/sec-storage-dark.svg">
+  <img src="assets/readme/sec-storage-light.svg" alt="数据与配置存储" width="100%">
+</picture>
+</h2>
 
-## 📂 数据与配置存储
+<details open>
+<summary><strong>点击展开查看本机数据目录与苍蓝套件共享配置路径</strong></summary>
+
+<br>
 
 - **预设与上下文监测配置**：`~/.gemini/agent-presets/config.json`
 - **苍蓝套件左侧栏显示配置**：`~/.gemini/azure-sidebar-nav.json`
 - **苍蓝套件共享主题配置**：`~/.gemini/azure-theme.json`
 
-所有用户配置与插件代码目录完全隔离，升级插件不会丢失自定义预设。
+> 所有用户配置与插件代码目录完全隔离，升级插件不会丢失自定义预设。
+
+</details>
+
+<h2 id="azure-suite">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/readme/sec-suite-dark.svg">
+  <img src="assets/readme/sec-suite-light.svg" alt="苍蓝套件全家桶" width="100%">
+</picture>
+</h2>
+
+**苍蓝套件（Azure Suite）** 8 款插件共享统一的 **Neko Glass 毛玻璃界面**、跨插件同步的 **苍蓝主题色调中心**（`~/.gemini/azure-theme.json`）以及可自由开关的 **左侧栏快捷入口**（`~/.gemini/azure-sidebar-nav.json`）：
+
+| 插件 | 仓库 | 核心能力 |
+| --- | --- | --- |
+| ✦ **苍蓝协奏台** | [antigravity-external-orchestrator](https://github.com/A16Nights/antigravity-external-orchestrator) | 多渠道外部模型协同调度、自定义调度角色、容灾断路器与全链路实时监控 |
+| 🪐 **苍蓝星轨** | [antigravity-azure-orbit](https://github.com/A16Nights/antigravity-azure-orbit) | 将外部大模型直接挂载进 Antigravity 左下角原生模型下拉菜单担任主脑 |
+| 🧭 **苍蓝罗盘** &nbsp;`✦ 当前仓库` | [antigravity-azure-compass](https://github.com/A16Nights/antigravity-azure-compass) | Agent 工作模式预设中心、上下文水位监测与自动 /compact、苍蓝套件左侧栏总控 |
+| 🏛️ **苍蓝回廊** | [antigravity-azure-corridor](https://github.com/A16Nights/antigravity-azure-corridor) | 只读原生会话 FTS5 全文检索、自定义项目分组、优先级标签与独立安全归档箱 |
+| 🌌 **蓝汐 · 潮汐认知图谱** | [antigravity-lanxi-memory](https://github.com/A16Nights/antigravity-lanxi-memory) | 五层纯 Markdown 真源记忆、CJK FTS5、潮汐遗忘曲线与交互式潮汐星海图谱 |
+| 💎 **苍蓝魂匣** | [antigravity-soul-md](https://github.com/A16Nights/antigravity-soul-md) | 多人设卡热切换、工作区专属绑定、外接模型智能防掉线锚点与分层文件记忆 |
+| 💭 **思语中文** | [antigravity-think-zh](https://github.com/A16Nights/antigravity-think-zh) | 内部思考语言简体中文 / 英文双档热切换、双通道防漂移与实时注入预览 |
+| 🔮 **苍蓝棱镜** | [antigravity-azure-prism](https://github.com/A16Nights/antigravity-azure-prism) | 原生 MCP App 思维链实时观测、免密钥零 Token 机翻与外部模型双通道译文 |
 
 ---
 
-## 📄 License
+<div align="center">
 
-[MIT](./LICENSE)
+📄 Released under the **[MIT License](./LICENSE)** · Crafted for **Google Antigravity**
+
+</div>
