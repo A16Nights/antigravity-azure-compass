@@ -26,7 +26,7 @@
 
 </div>
 
-面向 **Google Antigravity** 的 Agent 工作模式预设中心、上下文水位实时监测与苍蓝套件全局入口管理插件。通过 **静态规则（`rules/AGENTS.md`）+ 生命周期钩子（`SessionStart` + `PreInvocation`）+ 可视化侧栏面板**，精准解决长会话或外接模型指令漂移、掉人设问题，并与 **[苍蓝魂匣（Soul.md）](https://github.com/A16Nights/antigravity-soul-md)**、**[蓝汐（Lanxi Memory）](https://github.com/A16Nights/antigravity-lanxi-memory)** 及原生 `/compact` 深度联动。
+面向 **Google Antigravity** 的 Agent 工作模式预设中心、上下文水位实时监测与苍蓝套件全局入口管理插件。通过 **静态规则（`rules/AGENTS.md`）+ 生命周期 Hook（`SessionStart` + `PreInvocation`）+ 可视化侧栏面板**，精准解决长会话或外接模型指令漂移、掉人设问题，并与 **[苍蓝魂匣（Soul.md）](https://github.com/A16Nights/antigravity-soul-md)**、**[蓝汐（Lanxi Memory）](https://github.com/A16Nights/antigravity-lanxi-memory)** 及原生 `/compact` 深度联动。
 
 <table>
 <tr>
