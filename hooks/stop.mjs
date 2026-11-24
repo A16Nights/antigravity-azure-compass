@@ -54,7 +54,26 @@ export async function handleStopHook(payload = {}, options = {}) {
     options.transcriptPath || resolveTranscriptPath(conversationId || sig.conversationId);
 
   let signal = { ...sig };
-  if (conversationId && !signal.conversationId) {
+  if (conversationId && signal.conversationId && signal.conversationId !== conversationId) {
+    // 切换到新会话时自动解除旧会话遗留的熔断与待压缩状态
+    signal = patchSentinelSignal(
+      {
+        conversationId,
+        needCompact: false,
+        warnedLevel: "none",
+        warnedTurnKey: null,
+        pendingAt: 0,
+        pendingLineCount: 0,
+        lastAttemptAt: 0,
+        failCount: 0,
+        lastError: "",
+        lastPercent: 0,
+        lastTokens: 0,
+        lastExtractedLine: 0
+      },
+      dataDir
+    );
+  } else if (conversationId && !signal.conversationId) {
     signal = patchSentinelSignal({ conversationId }, dataDir);
   }
   const activeConvId = conversationId || signal.conversationId || "";

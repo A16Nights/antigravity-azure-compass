@@ -103,6 +103,30 @@ export async function handlePreInvocation(input = {}, options = {}) {
 
   // ---------- 2) 上下文监测 ----------
   if (cfg.sentinel && cfg.sentinel.enabled) {
+    // 切换到新会话时自动解除旧会话遗留的熔断与待压缩状态
+    if (conversationId) {
+      const prevSig = loadSentinelSignal(dataDir);
+      if (prevSig.conversationId && prevSig.conversationId !== conversationId) {
+        patchSentinelSignal(
+          {
+            conversationId,
+            needCompact: false,
+            warnedLevel: "none",
+            warnedTurnKey: null,
+            pendingAt: 0,
+            pendingLineCount: 0,
+            lastAttemptAt: 0,
+            failCount: 0,
+            lastError: "",
+            lastPercent: 0,
+            lastTokens: 0,
+            lastExtractedLine: 0
+          },
+          dataDir
+        );
+      }
+    }
+
     const status = store.inspectLatestSession(conversationId);
     if (status.found && (status.level === "critical" || status.level === "warn")) {
       const signal = loadSentinelSignal(dataDir);
@@ -155,10 +179,29 @@ export async function handlePreInvocation(input = {}, options = {}) {
         }
       }
     } else if (status.found && conversationId) {
-      // 压缩已生效（水位回落到 warn 以下）时清掉历史标记，避免 Stop hook 反复派发
+      // 水位已回落到 warn 以下（如手动 /compact 生效）且非结算期：清理待压缩标记与历史失败熔断
       const cur = loadSentinelSignal(dataDir);
-      if (cur.needCompact && !cur.pendingAt && cur.conversationId === conversationId) {
-        patchSentinelSignal({ needCompact: false, warnedLevel: "none" }, dataDir);
+      const sameConv = !cur.conversationId || cur.conversationId === conversationId;
+      const needsReset =
+        Boolean(cur.needCompact) ||
+        Number(cur.failCount) > 0 ||
+        Boolean(cur.lastError) ||
+        Boolean(cur.warnedLevel && cur.warnedLevel !== "none") ||
+        Number(cur.lastPercent) >= Number(cfg.sentinel.warnPercent || 55);
+      if (sameConv && !cur.pendingAt && needsReset) {
+        patchSentinelSignal(
+          {
+            conversationId,
+            needCompact: false,
+            warnedLevel: "none",
+            failCount: 0,
+            lastError: "",
+            lastAttemptAt: 0,
+            lastPercent: status.percent,
+            lastTokens: status.estimatedTokens
+          },
+          dataDir
+        );
       }
     }
   }

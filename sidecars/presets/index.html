@@ -16,6 +16,7 @@
     --badge-bg: #263047;
     --badge-active-bg: #3b4b72;
     --accent: #7aa2f7;
+    --warn: #e0af68;
     --danger: #f7768e;
   }
   [data-theme="light"] {
@@ -29,6 +30,7 @@
     --badge-bg: #e8effa;
     --badge-active-bg: #d4e3fc;
     --accent: #2f6fed;
+    --warn: #b87614;
     --danger: #d93855;
   }
   * { box-sizing: border-box; }
@@ -1044,10 +1046,18 @@ function renderSentinelSignal() {
     parts.push("待压缩：无");
   }
   const failCount = Math.max(0, Number(sig.failCount) || 0);
-  parts.push(`失败熔断：${failCount} 次`);
+  const maxRetries = Math.max(1, Number(state.sentinel?.maxRetries) || 3);
+  const breakerOpen = failCount >= maxRetries;
+  if (breakerOpen) {
+    parts.push(`熔断状态：已熔断（${failCount}/${maxRetries}，已暂停自动压缩）`);
+  } else if (failCount > 0) {
+    parts.push(`失败重试：${failCount}/${maxRetries}（冷却后自动重试）`);
+  } else {
+    parts.push(`熔断状态：正常（0/${maxRetries}）`);
+  }
   if (sig.lastError) parts.push(`最近错误：${sig.lastError}`);
   el.textContent = "监测信号 · " + parts.join("　|　");
-  el.style.color = failCount > 0 ? "var(--danger)" : "var(--muted)";
+  el.style.color = breakerOpen ? "var(--danger)" : failCount > 0 ? "var(--warn)" : "var(--muted)";
 }
 
 function render() {
