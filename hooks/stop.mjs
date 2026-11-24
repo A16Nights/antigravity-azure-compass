@@ -140,7 +140,7 @@ export async function handleStopHook(payload = {}, options = {}) {
 
   if (
     sentinelCfg.autoCompactEnabled &&
-    signal.needCompact &&
+    needCompact &&
     !signal.pendingAt &&
     !breakerOpen &&
     cooldownPassed &&

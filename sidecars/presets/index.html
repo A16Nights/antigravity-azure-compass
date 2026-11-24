@@ -538,11 +538,11 @@ function showToast(msg) {
 }
 
 async function api(path, opts = {}) {
-  const res = await fetch(path, {
-    headers: { "Content-Type": "application/json" },
-    ...opts
-  });
-  const data = await res.json();
+  const tok = new URLSearchParams(location.search).get("token") || "";
+  const headers = { "Content-Type": "application/json", ...(opts.headers || {}) };
+  if (tok) headers["X-Codeium-Sidecar-Token"] = tok;
+  const res = await fetch(path, { ...opts, headers });
+  const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(data.error || "请求失败");
   return data;
 }
@@ -680,14 +680,21 @@ async function load() {
   render();
 }
 
+let _activatingPreset = false;
 async function activatePreset(id) {
+  if (_activatingPreset) return;
+  _activatingPreset = true;
   try {
     const res = await api("/api/activate", { method: "POST", body: JSON.stringify({ id }) });
     await load();
-    const extra = res.soulSync?.synced ? `（已联动人设：${res.soulSync.card}）` : "";
+    let extra = "";
+    if (res.soulSync?.synced) extra = `（已联动人设：${res.soulSync.card}）`;
+    else if (res.soulSync && res.soulSync.error) extra = `（人设联动失败：${res.soulSync.error}）`;
     showToast(`已切换到：${res.active.name}${extra}`);
   } catch (e) {
     showToast(e.message);
+  } finally {
+    _activatingPreset = false;
   }
 }
 
