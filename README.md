@@ -17,7 +17,7 @@
 </p>
 
 <p>
-  <strong>一键切换 Agent 工作模式预设 · 上下文水位实时监测与自动 /compact · 苍蓝套件左侧栏全局入口总控</strong>
+  <strong>一键切换 Agent 工作模式预设 · 全局 AGENTS.md 全会话无损热同步 · 上下文水位监测与自动 /compact · 苍蓝套件左侧栏总控</strong>
 </p>
 
 <p>
@@ -101,11 +101,17 @@
   - 支持在面板一键触发 **「立即提炼并触发 `/compact`」**（通过本地 Language Server 接口触发原生上下文压缩，并联动蓝汐沉淀关键记忆）；
   - 支持开启 **「达到红线自动触发压缩」**，无需手动干预即可保持长会话清爽。
 
-### 5. 苍蓝套件 · 左侧栏快捷入口统一管理
+### 5. 全局 `AGENTS.md` 在线编辑与全会话无损热同步
+- **面板内双页签直编**：顶栏可一键切换 `🧭 模式预设与监测` 与 `📜 全局 AGENTS.md`，支持 `Ctrl+S` 保存、`Tab` 缩进与符号链接安全写入（若 `~/.gemini/config/AGENTS.md` 为软链接，直接覆写目标真文件，绝不破坏符号链接）。
+- **24 KB 原生上限计量 + 实时 Diff 预览**：按 UTF-8 字节实时展示占用进度条与 85% / 100% 预警；保存前可一键切换 `🔍 Diff 预览` 核对行级增删差异。
+- **自动快照与一键回滚**：每次保存、回滚或感知到外部编辑器改盘时自动留存最近 20 版快照（`~/.gemini/agent-presets/agents-snapshots/`），支持任意版本 Diff 对比与一键回滚。
+- **全模型老会话零浪费热同步**：所有模型（含原生模型与外接模型）均由 `SessionStart` + `PreInvocation` 协同追踪文件哈希——规则未改时返回空响应（0 Token、不破坏 Prompt Cache），仅在改过后的下一轮对仍在运行的旧会话单次推送「变更 Diff 摘要 + 最新全文」，新会话自动跳过不重复注入。
+
+### 6. 苍蓝套件 · 左侧栏快捷入口统一管理
 - 在面板底部集中展示本机已安装的苍蓝系列 8 款插件（苍蓝罗盘、苍蓝回廊、苍蓝星轨、苍蓝协奏台、蓝汐认知图谱、苍蓝魂匣、思语中文、苍蓝棱镜）；
 - 支持一键单独开启或关闭任意插件在 Antigravity 左侧栏的全局快捷入口（关闭左侧栏入口后，仍可在右侧辅助栏或通过对话正常打开）。
 
-### 6. 苍蓝统一视觉与交互体系
+### 7. 苍蓝统一视觉与交互体系
 - **Neko Glass 毛玻璃界面**：支持深色 / 浅色明暗双主题切换、自定义毛玻璃下拉框（`AzureSelect`）与 7px 细圆角滚动条。
 - **跨插件共享「苍蓝主题色调中心」**：内置 6 套官方主题预设、自定义主副双色取色器及 4 个自定义保存栏位，一处切换全套件实时同步。
 - **独立 Web UI & 在线更新检查**：点击顶栏 `Web UI` 即可在系统默认浏览器全屏打开；点击顶栏版本号徽章可实时对比 GitHub Release 最新版本。
@@ -168,6 +174,7 @@ git clone https://github.com/A16Nights/antigravity-azure-compass.git ~/.gemini/c
 <br>
 
 - **预设与上下文监测配置**：`~/.gemini/agent-presets/config.json`
+- **全局 AGENTS.md 热同步状态与快照**：`~/.gemini/agent-presets/agents-sync-state.json`、`~/.gemini/agent-presets/agents-snapshots/`
 - **苍蓝套件左侧栏显示配置**：`~/.gemini/azure-sidebar-nav.json`
 - **苍蓝套件共享主题配置**：`~/.gemini/azure-theme.json`
 

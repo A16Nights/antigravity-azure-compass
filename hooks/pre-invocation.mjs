@@ -12,6 +12,7 @@ import {
   loadSentinelSignal,
   patchSentinelSignal
 } from "../lib/store.mjs";
+import { evaluateAgentsHotSync } from "../lib/agents-sync.mjs";
 import { isExternalModel } from "../lib/external-model-guard.mjs";
 
 const LEVEL_RANK = { none: 0, ok: 0, warn: 1, critical: 2 };
@@ -72,6 +73,18 @@ export async function handlePreInvocation(input = {}, options = {}) {
   const conversationId = String(input.conversationId || input.conversation_id || "").trim();
   const userTurnKey = normalizeTurnKey(input.initialNumSteps ?? input.initial_num_steps ?? null);
   const invocationNum = normalizeTurnKey(input.invocationNum ?? input.invocation_num ?? null);
+
+  // ---------- 0) 全局 AGENTS.md 热更新（所有模型生效，变更单次热推，未变 0 开销） ----------
+  if (conversationId) {
+    const agentsSync = evaluateAgentsHotSync(conversationId, {
+      agentsPath: options.agentsPath,
+      dataDir,
+      brainDir: options.brainDir
+    });
+    if (agentsSync.shouldPush && agentsSync.message) {
+      parts.push(agentsSync.message);
+    }
+  }
 
   // ---------- 1) 预设锚点（仅对外接模型生效 + 回合级去重） ----------
   if (cfg.perTurnReinforce && isExternalModel(input, { customModelsPath: options.customModelsPath })) {

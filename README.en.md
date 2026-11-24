@@ -17,7 +17,7 @@
 </p>
 
 <p>
-  <strong>One-click Agent mode presets, live context telemetry with automatic /compact, and centralized Azure Suite sidebar control</strong>
+  <strong>One-click Agent mode presets, lossless global AGENTS.md hot-sync, live context telemetry with auto /compact, and Azure Suite sidebar hub</strong>
 </p>
 
 <p>
@@ -93,10 +93,16 @@ Lists all installed Azure Suite plugins in one place and lets you toggle each pl
 - **Two-Tier Thresholds**: Stage notice (default 55%) and high-priority redline warning (default 72%), with selectable window targets (`128k` / `200k` / `256k` / `500k` / `1M`).
 - **Native `/compact` & Memory Archival**: One-click **Distill & Trigger `/compact`** via the local Language Server API, or enable **Auto-Compact at Redline** for hands-free long sessions.
 
-### 5. Azure Suite Left-Sidebar Shortcut Hub
+### 5. Global `AGENTS.md` Editor & Lossless Multi-Session Hot-Sync
+- **Dual-Tab In-Panel Editor**: Switch between `🧭 Mode Presets & Monitor` and `📜 Global AGENTS.md`, with `Ctrl+S` save, `Tab` indentation, and symlink-safe writing (resolves real target path without breaking `~/.gemini/config/AGENTS.md` symlinks).
+- **24 KB Size Guard & Live Diff Preview**: Tracks exact UTF-8 byte usage against Antigravity's 24 KB native cap with 85% / 100% warnings, plus a built-in zero-dependency line-level Diff preview before saving.
+- **Automatic Snapshots & One-Click Rollback**: Automatically keeps up to 20 snapshots in `~/.gemini/agent-presets/agents-snapshots/` on save, rollback, or external edits, with per-snapshot Diff inspection and one-click restore.
+- **Zero-Waste Hot-Sync Across All Models**: `SessionStart` and `PreInvocation` track content hashes per conversation for both native and external models—returning empty `{}` (zero tokens, Prompt Cache intact) when unchanged, and injecting the diff summary + latest rules once on the next turn of existing sessions when modified.
+
+### 6. Azure Suite Left-Sidebar Shortcut Hub
 - Displays all 8 installed Azure Suite plugins at the bottom of the panel with individual switches to show or hide each plugin's left-sidebar shortcut.
 
-### 6. Unified Azure Suite UI
+### 7. Unified Azure Suite UI
 - **Neko Glass UI & Shared Theme Center**: Dark/light mode, custom glass dropdowns (`AzureSelect`), 6 official theme presets + dual custom pickers + 4 shared custom slots, standalone `Web UI`, and GitHub Release update checks.
 
 <h2 id="architecture">
@@ -157,6 +163,7 @@ Restart or reload Antigravity (`Ctrl+R`), enable **Azure Compass** in **Plugins*
 <br>
 
 - **Presets & Context Telemetry Config**: `~/.gemini/agent-presets/config.json`
+- **Global AGENTS.md Hot-Sync State & Snapshots**: `~/.gemini/agent-presets/agents-sync-state.json`, `~/.gemini/agent-presets/agents-snapshots/`
 - **Azure Suite Sidebar Visibility**: `~/.gemini/azure-sidebar-nav.json`
 - **Shared Azure Suite Theme**: `~/.gemini/azure-theme.json`
 

@@ -9,6 +9,7 @@ import crypto from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { spawn } from "node:child_process";
 import { PresetStore, CONFIG_PATH } from "../../lib/store.mjs";
+import { AgentsSyncStore } from "../../lib/agents-sync.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const INDEX_HTML = path.join(__dirname, "index.html");
@@ -24,6 +25,7 @@ const TOKEN = (
 ).trim();
 
 const store = new PresetStore();
+const agentsStore = new AgentsSyncStore();
 
 function isAllowedLocalOrigin(req) {
   const origin = String(req.headers?.origin || "").trim();
@@ -234,6 +236,55 @@ const server = http.createServer(async (req, res) => {
     if (req.method === "POST" && pathname === "/api/open-config") {
       openFileCrossPlatform(CONFIG_PATH);
       sendJson(res, 200, { ok: true, configPath: CONFIG_PATH });
+      return;
+    }
+
+    // ---------- 全局 AGENTS.md 编辑、Diff、快照回滚与热同步 API ----------
+    if (req.method === "GET" && pathname === "/api/agents") {
+      sendJson(res, 200, agentsStore.getState());
+      return;
+    }
+
+    if (req.method === "POST" && pathname === "/api/agents/save") {
+      const body = await readBody(req);
+      const result = agentsStore.saveContent(body.content);
+      sendJson(res, 200, result);
+      return;
+    }
+
+    if (req.method === "POST" && pathname === "/api/agents/toggle-sync") {
+      const body = await readBody(req);
+      const result = agentsStore.setSyncEnabled(body.enabled);
+      sendJson(res, 200, { ok: true, ...result });
+      return;
+    }
+
+    if (req.method === "POST" && pathname === "/api/agents/diff") {
+      const body = await readBody(req);
+      const result = agentsStore.previewDiff(body.content);
+      sendJson(res, 200, result);
+      return;
+    }
+
+    if (req.method === "GET" && pathname.startsWith("/api/agents/snapshots/")) {
+      const id = decodeURIComponent(pathname.slice("/api/agents/snapshots/".length));
+      const detail = agentsStore.getSnapshotDetail(id);
+      sendJson(res, 200, detail);
+      return;
+    }
+
+    if (req.method === "POST" && pathname === "/api/agents/rollback") {
+      const body = await readBody(req);
+      const result = agentsStore.rollbackSnapshot(body.id);
+      sendJson(res, 200, result);
+      return;
+    }
+
+    if (req.method === "POST" && pathname === "/api/agents/open") {
+      const st = agentsStore.getState();
+      const targetFile = st.target?.exists ? st.target.realPath : path.dirname(st.target?.realPath || CONFIG_PATH);
+      openFileCrossPlatform(targetFile);
+      sendJson(res, 200, { ok: true, path: targetFile });
       return;
     }
 

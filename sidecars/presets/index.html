@@ -45,8 +45,13 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    gap: 12px;
+    flex-wrap: wrap;
+    gap: 10px 14px;
     margin-bottom: 14px;
+  }
+  .header > div:first-child {
+    flex: 1 1 280px;
+    min-width: 0;
   }
   h1 {
     margin: 0 0 4px 0;
@@ -60,8 +65,14 @@
   }
   .actions {
     display: flex;
-    gap: 8px;
-    flex-shrink: 0;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 8px;
+    flex: 0 1 auto;
+    max-width: 100%;
+  }
+  .actions button {
+    white-space: nowrap;
   }
   button {
     background: var(--card);
@@ -119,11 +130,22 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px 12px;
     background: var(--card);
     border: 1px solid var(--border);
     border-radius: 10px;
     padding: 10px 14px;
     margin-bottom: 12px;
+  }
+  .toolbar .toggle-label {
+    flex: 1 1 260px;
+    min-width: 0;
+  }
+  #statusText {
+    flex-shrink: 0;
+    white-space: nowrap;
+    margin-left: auto;
   }
   .sentinel-box {
     background: var(--card);
@@ -136,7 +158,16 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 8px 12px;
     margin-bottom: 10px;
+  }
+  .sentinel-head .toggle-label {
+    flex: 1 1 240px;
+    min-width: 0;
+  }
+  @media (max-width: 520px) {
+    body { padding: 14px; }
   }
   .sentinel-controls {
     display: grid;
@@ -276,6 +307,8 @@
     border-radius: 999px;
     background: var(--badge-bg);
     color: var(--muted);
+    flex-shrink: 0;
+    white-space: nowrap;
   }
   .card.active .badge.active-tag {
     background: var(--badge-active-bg);
@@ -396,6 +429,310 @@
     gap: 8px;
     margin-top: 12px;
   }
+  .toast { z-index: 9999; }
+
+  /* ---------- 双页签 & 全局 AGENTS.md 编辑器 ---------- */
+  .view-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .view-tabs button.seg-btn.view-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 10px;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--muted) !important;
+    background: rgba(255, 255, 255, 0.04) !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: none !important;
+  }
+  [data-theme="light"] .view-tabs button.seg-btn.view-tab {
+    background: rgba(15, 23, 42, 0.04) !important;
+  }
+  .view-tabs button.seg-btn.view-tab:hover:not(.active) {
+    color: var(--text) !important;
+    border-color: var(--accent) !important;
+    background: rgba(122, 162, 247, 0.12) !important;
+  }
+  .view-tabs button.seg-btn.view-tab.active,
+  .view-tabs button.seg-btn.view-tab.active:hover {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    background: var(--neko-grad, linear-gradient(135deg, #2563eb 0%, #6366f1 100%)) !important;
+    border: 1px solid rgba(147, 197, 253, 0.85) !important;
+    box-shadow: 0 0 0 1px rgba(96, 165, 250, 0.45), 0 6px 18px rgba(59, 130, 246, 0.42) !important;
+  }
+  .tab-pill {
+    font-size: 10.5px;
+    padding: 1px 6px;
+    border-radius: 999px;
+    background: rgba(148, 163, 184, 0.16);
+    color: inherit;
+    font-weight: 500;
+  }
+  .view-tabs button.seg-btn.view-tab.active .tab-pill {
+    background: rgba(255, 255, 255, 0.22);
+    color: #ffffff;
+  }
+  .tab-pill.dirty {
+    background: rgba(245, 158, 11, 0.25);
+    color: #fbbf24;
+  }
+  .view-tabs button.seg-btn.view-tab.active .tab-pill.dirty {
+    background: rgba(254, 243, 199, 0.28);
+    color: #fef08a;
+  }
+  .agents-meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 10px;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(148, 163, 184, 0.14);
+    font-size: 11.5px;
+    color: var(--muted);
+  }
+  .agents-path-line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    flex: 1 1 220px;
+    word-break: break-all;
+  }
+  .agents-badges {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+  }
+  .badge.symlink-ok {
+    background: rgba(56, 189, 248, 0.16);
+    color: #7dd3fc;
+    border: 1px solid rgba(56, 189, 248, 0.32);
+  }
+  [data-theme="light"] .badge.symlink-ok {
+    color: #0369a1;
+    background: rgba(2, 132, 199, 0.12);
+  }
+  .badge.level-ok {
+    background: rgba(34, 197, 94, 0.15);
+    color: #86efac;
+  }
+  [data-theme="light"] .badge.level-ok { color: #15803d; }
+  .badge.level-warn {
+    background: rgba(245, 158, 11, 0.18);
+    color: #fbbf24;
+  }
+  [data-theme="light"] .badge.level-warn { color: #b45309; }
+  .badge.level-over {
+    background: rgba(247, 118, 142, 0.22);
+    color: #fda4af;
+    font-weight: 600;
+  }
+  [data-theme="light"] .badge.level-over { color: #be123c; }
+  .agents-over-warn {
+    margin-top: 8px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    line-height: 1.5;
+    color: #fda4af;
+    background: rgba(247, 118, 142, 0.14);
+    border: 1px solid rgba(247, 118, 142, 0.38);
+    display: none;
+  }
+  [data-theme="light"] .agents-over-warn { color: #be123c; }
+  .agents-editor-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 10px;
+    margin-bottom: 10px;
+  }
+  .seg-group {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .seg-group button.seg-btn {
+    padding: 5px 11px;
+    font-size: 12px;
+    border-radius: 8px;
+    color: var(--muted) !important;
+    background: rgba(255, 255, 255, 0.04) !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: none !important;
+  }
+  [data-theme="light"] .seg-group button.seg-btn {
+    background: rgba(15, 23, 42, 0.04) !important;
+  }
+  .seg-group button.seg-btn:hover:not(.active) {
+    color: var(--text) !important;
+    border-color: var(--accent) !important;
+    background: rgba(122, 162, 247, 0.12) !important;
+  }
+  .seg-group button.seg-btn.active,
+  .seg-group button.seg-btn.active:hover {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    background: var(--neko-grad, linear-gradient(135deg, #2563eb 0%, #6366f1 100%)) !important;
+    border: 1px solid rgba(147, 197, 253, 0.85) !important;
+    box-shadow: 0 0 0 1px rgba(96, 165, 250, 0.4), 0 4px 12px rgba(59, 130, 246, 0.36) !important;
+  }
+  .agents-editor-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+  .agents-editor {
+    width: 100%;
+    min-height: 320px;
+    max-height: 62vh;
+    resize: vertical;
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+    font-family: "Cascadia Code", Consolas, "JetBrains Mono", "Microsoft YaHei Mono", monospace;
+    font-size: 12.5px;
+    line-height: 1.6;
+    tab-size: 2;
+    outline: none;
+  }
+  .agents-editor:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(122, 162, 247, 0.18);
+  }
+  .diff-viewer {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    min-height: 220px;
+    max-height: 55vh;
+    overflow: auto;
+    font-family: "Cascadia Code", Consolas, monospace;
+    font-size: 12px;
+    line-height: 1.55;
+  }
+  .diff-empty {
+    padding: 36px 16px;
+    text-align: center;
+    color: var(--muted);
+    font-family: inherit;
+  }
+  .diff-line {
+    display: flex;
+    align-items: flex-start;
+    padding: 1px 10px;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .diff-line.add {
+    background: rgba(34, 197, 94, 0.14);
+    color: #bbf7d0;
+  }
+  [data-theme="light"] .diff-line.add {
+    background: rgba(34, 197, 94, 0.16);
+    color: #14532d;
+  }
+  .diff-line.del {
+    background: rgba(244, 63, 94, 0.15);
+    color: #fecdd3;
+  }
+  [data-theme="light"] .diff-line.del {
+    background: rgba(244, 63, 94, 0.14);
+    color: #881337;
+  }
+  .diff-line.sep {
+    justify-content: center;
+    color: var(--muted);
+    background: rgba(148, 163, 184, 0.08);
+    padding: 3px 10px;
+    font-size: 11px;
+  }
+  .diff-ln {
+    width: 34px;
+    flex-shrink: 0;
+    text-align: right;
+    padding-right: 8px;
+    color: var(--muted);
+    opacity: 0.7;
+    user-select: none;
+  }
+  .diff-sign {
+    width: 14px;
+    flex-shrink: 0;
+    font-weight: 700;
+    user-select: none;
+  }
+  .diff-txt { flex: 1; min-width: 0; }
+  .snap-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 280px;
+    overflow-y: auto;
+    padding-right: 2px;
+  }
+  .snap-item {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 12px;
+    padding: 9px 11px;
+    border-radius: 9px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+  }
+  .snap-info {
+    flex: 1 1 200px;
+    min-width: 0;
+  }
+  .snap-top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .snap-sub {
+    margin-top: 2px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .snap-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .snap-actions button {
+    padding: 4px 9px;
+    font-size: 11.5px;
+  }
+  .modal.wide-modal {
+    max-width: 680px;
+    max-height: 86vh;
+    display: flex;
+    flex-direction: column;
+  }
+  .modal.wide-modal .diff-viewer {
+    max-height: 52vh;
+  }
 </style>
 </head>
 <body>
@@ -411,6 +748,15 @@
     </div>
   </div>
 
+  <div class="view-tabs" role="tablist">
+    <button type="button" class="seg-btn view-tab active" id="tabPresets" role="tab" aria-selected="true">🧭 模式预设与监测</button>
+    <button type="button" class="seg-btn view-tab" id="tabAgents" role="tab" aria-selected="false">
+      <span>📜 全局 AGENTS.md</span>
+      <span class="tab-pill" id="agentsTabBadge">--</span>
+    </button>
+  </div>
+
+  <div id="viewPresets">
   <div class="toolbar">
     <label class="toggle-label">
       <input type="checkbox" id="chkReinforce" />
@@ -481,8 +827,94 @@
     </div>
     <div id="sidebarNavList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px;"></div>
   </div>
+  </div><!-- /#viewPresets -->
+
+  <div id="viewAgents" style="display:none;">
+    <div class="sentinel-box" style="margin-bottom:12px;">
+      <div class="sentinel-head" style="margin-bottom:4px;">
+        <label class="toggle-label">
+          <input type="checkbox" id="chkAgentsSync" />
+          <span><strong>全会话热同步</strong>（保存或外部修改后，旧会话下轮自动获取新版，未变 0 Token 开销）</span>
+        </label>
+        <div class="agents-badges">
+          <span class="badge" id="agentsHashBadge">v#--</span>
+          <span class="badge" id="agentsSyncBadge">已追踪 0 会话</span>
+        </div>
+      </div>
+      <div class="agents-meta-row">
+        <div class="agents-path-line">
+          <span class="badge symlink-ok" id="agentsSymlinkBadge" style="display:none;">🔗 符号链接已保护</span>
+          <span id="agentsPathText">正在读取全局 AGENTS.md...</span>
+        </div>
+        <button type="button" id="btnOpenAgents" style="padding:4px 10px;font-size:11.5px;">外部编辑器打开</button>
+      </div>
+    </div>
+
+    <div class="sentinel-box" style="margin-bottom:12px;">
+      <div class="sentinel-head" style="margin-bottom:8px;">
+        <span id="agentsSizeLabel" style="font-size:12px;">UTF-8 体积：-- / 24.0 KB</span>
+        <span class="badge level-ok" id="agentsLimitBadge">正常</span>
+      </div>
+      <div class="meter-wrap">
+        <div class="meter-bar"><div class="meter-fill" id="agentsSizeFill" style="width:0%"></div></div>
+        <span id="agentsSizePct" style="flex-shrink:0;">0%</span>
+      </div>
+      <div class="agents-over-warn" id="agentsOverWarn">
+        已超出 Antigravity 单份规则文件 24 KB 原生上限，新会话初始加载时尾部内容可能被截断；仍可保存，但建议精简。
+      </div>
+    </div>
+
+    <div class="sentinel-box" style="margin-bottom:12px;">
+      <div class="agents-editor-bar">
+        <div class="seg-group">
+          <button type="button" class="seg-btn active" id="btnModeEdit">✏️ 编辑正文</button>
+          <button type="button" class="seg-btn" id="btnModeDiff">🔍 Diff 预览 <span id="agentsDiffBadge"></span></button>
+        </div>
+        <div class="agents-editor-actions">
+          <button type="button" id="btnAgentsDiscard" disabled>放弃修改</button>
+          <button type="button" class="primary" id="btnAgentsSave">💾 保存并全会话生效</button>
+        </div>
+      </div>
+      <textarea id="agentsEditor" class="agents-editor" spellcheck="false" placeholder="在此编辑全局 AGENTS.md，按 Ctrl+S 即可保存并自动快照..."></textarea>
+      <div id="agentsDiffViewer" class="diff-viewer" style="display:none;"></div>
+    </div>
+
+    <div class="sentinel-box" style="margin-bottom:0;">
+      <div class="sentinel-head">
+        <div style="font-weight:600;font-size:13px;">🕘 历史快照与一键回滚（自动保留最近 20 版）</div>
+        <span class="badge" id="agentsSnapCount">0 版</span>
+      </div>
+      <div id="agentsSnapList" class="snap-list">
+        <div style="font-size:12px;color:var(--muted);padding:8px 2px;">暂无历史快照，每次保存或回滚前都会自动留存备份。</div>
+      </div>
+    </div>
+  </div>
 
   <div class="toast" id="toast"></div>
+
+  <div class="modal-mask" id="snapshotModalMask">
+    <div class="modal wide-modal" role="dialog" aria-modal="true" aria-labelledby="snapModalTitle">
+      <h2 id="snapModalTitle">快照变更对比</h2>
+      <p class="confirm-note" id="snapModalMeta" style="margin-bottom:10px;"></p>
+      <div id="snapModalDiff" class="diff-viewer"></div>
+      <div class="modal-actions">
+        <button type="button" id="btnSnapModalClose">关闭</button>
+        <button type="button" class="primary" id="btnSnapModalRollback">回滚到此版本</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-mask" id="rollbackModalMask">
+    <div class="modal confirm-modal" role="dialog" aria-modal="true" aria-labelledby="rollbackTitle">
+      <h2 id="rollbackTitle">确认回滚全局 AGENTS.md</h2>
+      <p class="confirm-desc" id="rollbackDesc"></p>
+      <p class="confirm-note">回滚前会自动把当前磁盘版本存成一条新快照，不会丢失现有内容；回滚完成后将自动热推给所有旧会话。</p>
+      <div class="modal-actions">
+        <button type="button" id="btnRollbackCancel">取消</button>
+        <button type="button" class="primary" id="btnRollbackOk">确认回滚并热同步</button>
+      </div>
+    </div>
+  </div>
 
   <div class="modal-mask" id="modalMask">
     <div class="modal">
@@ -924,15 +1356,394 @@ document.getElementById("btnRefresh").onclick = async () => {
   const btn = document.getElementById("btnRefresh");
   btn.classList.add("spinning");
   try {
-    await load();
-    showToast("已刷新最新状态");
+    await Promise.all([load(), loadAgents({ keepDraft: true })]);
+    showToast(agentsDirty ? "已刷新状态（已保留编辑器未保存草稿）" : "已刷新最新状态");
   } finally {
     setTimeout(() => btn.classList.remove("spinning"), 260);
   }
 };
 
+// ---------- 双页签 & 全局 AGENTS.md 编辑、24KB 提醒、Diff 预览与快照回滚 ----------
+const AGENTS_LIMIT_BYTES = 24 * 1024;
+let activeViewTab = "presets";
+let agentsData = null;
+let agentsDiskContent = "";
+let agentsDirty = false;
+let agentsViewMode = "edit";
+let _savingAgents = false;
+let _pendingRollbackSnap = null;
+let _diffPreviewTimer = null;
+
+function utf8ByteLength(str) {
+  try {
+    return new TextEncoder().encode(String(str ?? "")).length;
+  } catch {
+    return String(str ?? "").length;
+  }
+}
+
+function formatKb(bytes) {
+  return (bytes / 1024).toFixed(2) + " KB";
+}
+
+function formatLocalTime(iso) {
+  if (!iso) return "--";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return String(iso);
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+}
+
+function normalizeLfStr(s) {
+  return String(s ?? "").replace(/\r\n/g, "\n");
+}
+
+function switchViewTab(tab) {
+  activeViewTab = tab === "agents" ? "agents" : "presets";
+  const isAgents = activeViewTab === "agents";
+  document.getElementById("viewPresets").style.display = isAgents ? "none" : "";
+  document.getElementById("viewAgents").style.display = isAgents ? "" : "none";
+  const tPresets = document.getElementById("tabPresets");
+  const tAgents = document.getElementById("tabAgents");
+  tPresets.classList.toggle("active", !isAgents);
+  tAgents.classList.toggle("active", isAgents);
+  tPresets.setAttribute("aria-selected", String(!isAgents));
+  tAgents.setAttribute("aria-selected", String(isAgents));
+  try { sessionStorage.setItem("azure_compass_tab", activeViewTab); } catch {}
+  if (isAgents && !agentsData) loadAgents();
+}
+
+function updateAgentsLiveMeter() {
+  const editor = document.getElementById("agentsEditor");
+  const text = editor ? editor.value : "";
+  const eol = agentsData?.eol || "\n";
+  const effectiveText = eol === "\r\n" ? normalizeLfStr(text).replace(/\n/g, "\r\n") : normalizeLfStr(text);
+  const bytes = utf8ByteLength(effectiveText);
+  const chars = text.length;
+  const lines = text.length === 0 ? 0 : normalizeLfStr(text).split("\n").length;
+  const pct = Number(((bytes / AGENTS_LIMIT_BYTES) * 100).toFixed(1));
+  const level = bytes > AGENTS_LIMIT_BYTES ? "over" : (pct >= 85 ? "warn" : "ok");
+
+  agentsDirty = normalizeLfStr(text) !== normalizeLfStr(agentsDiskContent);
+
+  document.getElementById("agentsSizeLabel").textContent =
+    `UTF-8 体积：${formatKb(bytes)} / 24.00 KB · ${lines} 行 · ${chars} 字`;
+  document.getElementById("agentsSizePct").textContent = `${pct}%`;
+
+  const fill = document.getElementById("agentsSizeFill");
+  fill.style.width = Math.min(100, pct) + "%";
+  fill.className = "meter-fill" + (level === "over" ? " critical" : level === "warn" ? " warn" : "");
+
+  const badge = document.getElementById("agentsLimitBadge");
+  badge.className = "badge " + (level === "over" ? "level-over" : level === "warn" ? "level-warn" : "level-ok");
+  badge.textContent = level === "over"
+    ? `超出 ${formatKb(bytes - AGENTS_LIMIT_BYTES)}`
+    : (level === "warn" ? "接近 24 KB 上限" : "正常");
+
+  document.getElementById("agentsOverWarn").style.display = level === "over" ? "" : "none";
+  document.getElementById("btnAgentsDiscard").disabled = !agentsDirty;
+
+  const tabBadge = document.getElementById("agentsTabBadge");
+  if (tabBadge) {
+    tabBadge.className = "tab-pill" + (agentsDirty ? " dirty" : "");
+    tabBadge.textContent = agentsDirty ? "● 未保存" : formatKb(bytes);
+  }
+}
+
+function renderDiffInto(container, diff, emptyText = "当前草稿与磁盘文件完全一致，暂无变更。") {
+  if (!diff || !diff.changed || !Array.isArray(diff.lines) || diff.lines.length === 0) {
+    container.innerHTML = `<div class="diff-empty">${escapeHtml(emptyText)}</div>`;
+    return;
+  }
+  container.innerHTML = diff.lines.map((row) => {
+    if (row.type === "sep") {
+      return `<div class="diff-line sep">··· 省略未改动上下文 ···</div>`;
+    }
+    const sign = row.type === "add" ? "+" : row.type === "del" ? "-" : " ";
+    const ln = row.type === "del" ? (row.oldLine ?? "") : (row.newLine ?? row.oldLine ?? "");
+    return `<div class="diff-line ${row.type}"><span class="diff-ln">${ln}</span><span class="diff-sign">${sign}</span><span class="diff-txt">${escapeHtml(row.text)}</span></div>`;
+  }).join("");
+}
+
+async function refreshAgentsDiffPreview() {
+  const viewer = document.getElementById("agentsDiffViewer");
+  const diffBadge = document.getElementById("agentsDiffBadge");
+  const draft = document.getElementById("agentsEditor").value;
+  try {
+    const res = await api("/api/agents/diff", {
+      method: "POST",
+      body: JSON.stringify({ content: draft })
+    });
+    const d = res.diff;
+    diffBadge.textContent = d?.changed ? `(+${d.added} / -${d.removed})` : "";
+    if (agentsViewMode === "diff") {
+      renderDiffInto(viewer, d);
+    }
+  } catch (e) {
+    if (agentsViewMode === "diff") {
+      viewer.innerHTML = `<div class="diff-empty">计算 Diff 失败：${escapeHtml(e.message)}</div>`;
+    }
+  }
+}
+
+function setAgentsViewMode(mode) {
+  agentsViewMode = mode === "diff" ? "diff" : "edit";
+  const isDiff = agentsViewMode === "diff";
+  document.getElementById("agentsEditor").style.display = isDiff ? "none" : "";
+  document.getElementById("agentsDiffViewer").style.display = isDiff ? "" : "none";
+  document.getElementById("btnModeEdit").classList.toggle("active", !isDiff);
+  document.getElementById("btnModeDiff").classList.toggle("active", isDiff);
+  if (isDiff) refreshAgentsDiffPreview();
+}
+
+function renderSnapshots(snapshots) {
+  const listEl = document.getElementById("agentsSnapList");
+  const countEl = document.getElementById("agentsSnapCount");
+  const items = Array.isArray(snapshots) ? snapshots : [];
+  countEl.textContent = `${items.length} 版`;
+  if (items.length === 0) {
+    listEl.innerHTML = `<div style="font-size:12px;color:var(--muted);padding:8px 2px;">暂无历史快照，每次保存或回滚前都会自动留存备份。</div>`;
+    return;
+  }
+  const reasonMap = { save: "保存前", rollback: "回滚前", external: "外部修改前" };
+  listEl.innerHTML = "";
+  for (const snap of items) {
+    const row = document.createElement("div");
+    row.className = "snap-item";
+    const reasonLabel = reasonMap[snap.reason] || "自动备份";
+    row.innerHTML = `
+      <div class="snap-info">
+        <div class="snap-top">
+          <span>${escapeHtml(formatLocalTime(snap.createdAt))}</span>
+          <span class="badge">${escapeHtml(reasonLabel)}</span>
+          <span class="card-id">#${escapeHtml((snap.hash || "").slice(0, 8))}</span>
+        </div>
+        <div class="snap-sub">${escapeHtml(formatKb(snap.bytes || 0))} · ${snap.lines || 0} 行${snap.summary ? " · " + escapeHtml(snap.summary) : ""}</div>
+      </div>
+      <div class="snap-actions">
+        <button type="button" data-act="diff">对比 Diff</button>
+        <button type="button" class="primary" data-act="rollback">回滚此版</button>
+      </div>
+    `;
+    row.querySelector('[data-act="diff"]').onclick = () => openSnapshotDiffModal(snap);
+    row.querySelector('[data-act="rollback"]').onclick = () => openRollbackConfirm(snap);
+    listEl.appendChild(row);
+  }
+}
+
+function renderAgents(keepDraft = false) {
+  if (!agentsData) return;
+  const sync = agentsData.sync || {};
+  const target = agentsData.target || {};
+  document.getElementById("chkAgentsSync").checked = sync.enabled !== false;
+  document.getElementById("agentsHashBadge").textContent = sync.shortHash ? `v#${sync.shortHash}` : "未创建";
+  document.getElementById("agentsSyncBadge").textContent =
+    sync.staleCount > 0
+      ? `已同步 ${sync.syncedCount} · 待热推 ${sync.staleCount}`
+      : `已追踪 ${sync.totalTracked || 0} 会话`;
+
+  const symBadge = document.getElementById("agentsSymlinkBadge");
+  if (target.isSymlink) {
+    symBadge.style.display = "";
+    symBadge.title = `逻辑路径：${target.logicalPath}\n真实写入目标：${target.realPath}`;
+    document.getElementById("agentsPathText").textContent = `目标：${target.realPath}`;
+  } else {
+    symBadge.style.display = "none";
+    document.getElementById("agentsPathText").textContent = target.exists
+      ? `文件：${target.logicalPath}`
+      : `尚未创建：${target.logicalPath}（保存后自动生成）`;
+  }
+
+  agentsDiskContent = agentsData.content || "";
+  if (!keepDraft || !agentsDirty) {
+    document.getElementById("agentsEditor").value = normalizeLfStr(agentsDiskContent);
+    document.getElementById("agentsDiffBadge").textContent = "";
+  }
+  updateAgentsLiveMeter();
+  renderSnapshots(agentsData.snapshots);
+  if (agentsViewMode === "diff") refreshAgentsDiffPreview();
+}
+
+async function loadAgents(opts = {}) {
+  try {
+    agentsData = await api("/api/agents");
+    renderAgents(Boolean(opts.keepDraft));
+  } catch (e) {
+    const isOldSidecar = /not found/i.test(String(e.message || ""));
+    if (isOldSidecar) {
+      document.getElementById("agentsPathText").textContent = "旧版 Sidecar 服务尚未重启，请按 Ctrl+R 重载窗口以启用新接口";
+      const tabBadge = document.getElementById("agentsTabBadge");
+      if (tabBadge) tabBadge.textContent = "需重载";
+    }
+    showToast(isOldSidecar ? "请按 Ctrl+R 重载窗口以启用全局 AGENTS.md 接口" : ("读取 AGENTS.md 失败：" + e.message));
+  }
+}
+
+async function saveAgentsContent() {
+  if (_savingAgents) return;
+  _savingAgents = true;
+  const btn = document.getElementById("btnAgentsSave");
+  const prevLabel = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = "保存中...";
+  try {
+    const content = document.getElementById("agentsEditor").value;
+    const res = await api("/api/agents/save", {
+      method: "POST",
+      body: JSON.stringify({ content })
+    });
+    agentsData = res.state;
+    agentsDirty = false;
+    renderAgents(false);
+    if (res.unchanged) {
+      showToast("内容未发生变化，无需保存");
+    } else {
+      const tip = res.diff ? `（+${res.diff.added} / -${res.diff.removed} 行）` : "";
+      showToast(`已保存并留存快照${tip}，旧会话下轮对话自动生效`);
+    }
+  } catch (e) {
+    showToast("保存失败：" + e.message);
+  } finally {
+    _savingAgents = false;
+    btn.disabled = false;
+    btn.textContent = prevLabel;
+  }
+}
+
+async function openSnapshotDiffModal(snap) {
+  const mask = document.getElementById("snapshotModalMask");
+  const metaEl = document.getElementById("snapModalMeta");
+  const diffEl = document.getElementById("snapModalDiff");
+  _pendingRollbackSnap = snap;
+  document.getElementById("snapModalTitle").textContent = `快照对比 · ${formatLocalTime(snap.createdAt)}`;
+  metaEl.textContent = "正在加载快照差异...";
+  diffEl.innerHTML = `<div class="diff-empty">加载中...</div>`;
+  mask.classList.add("open");
+  try {
+    const detail = await api(`/api/agents/snapshots/${encodeURIComponent(snap.id)}`);
+    const d = detail.rollbackDiff;
+    metaEl.textContent = `若从当前磁盘版本回滚到此快照（#${(snap.hash || "").slice(0, 8)}，${formatKb(snap.bytes || 0)}），将产生 +${d.added} / -${d.removed} 行变更：`;
+    renderDiffInto(diffEl, d, "此快照内容与当前磁盘文件完全一致。");
+  } catch (e) {
+    metaEl.textContent = "加载失败";
+    diffEl.innerHTML = `<div class="diff-empty">${escapeHtml(e.message)}</div>`;
+  }
+}
+
+function closeSnapshotDiffModal() {
+  document.getElementById("snapshotModalMask").classList.remove("open");
+}
+
+function openRollbackConfirm(snap) {
+  _pendingRollbackSnap = snap;
+  document.getElementById("rollbackDesc").textContent =
+    `确定将全局 AGENTS.md 回滚到 ${formatLocalTime(snap.createdAt)}（#${(snap.hash || "").slice(0, 8)}，${formatKb(snap.bytes || 0)}）吗？`;
+  document.getElementById("rollbackModalMask").classList.add("open");
+}
+
+function closeRollbackConfirm() {
+  document.getElementById("rollbackModalMask").classList.remove("open");
+}
+
+document.getElementById("tabPresets").onclick = () => switchViewTab("presets");
+document.getElementById("tabAgents").onclick = () => switchViewTab("agents");
+document.getElementById("btnModeEdit").onclick = () => setAgentsViewMode("edit");
+document.getElementById("btnModeDiff").onclick = () => setAgentsViewMode("diff");
+document.getElementById("btnAgentsSave").onclick = saveAgentsContent;
+document.getElementById("btnAgentsDiscard").onclick = () => {
+  document.getElementById("agentsEditor").value = normalizeLfStr(agentsDiskContent);
+  document.getElementById("agentsDiffBadge").textContent = "";
+  updateAgentsLiveMeter();
+  if (agentsViewMode === "diff") refreshAgentsDiffPreview();
+  showToast("已恢复到当前磁盘内容");
+};
+document.getElementById("btnOpenAgents").onclick = async () => {
+  try {
+    await api("/api/agents/open", { method: "POST" });
+    showToast("已调用系统默认编辑器打开 AGENTS.md");
+  } catch (e) {
+    showToast("打开失败：" + e.message);
+  }
+};
+document.getElementById("chkAgentsSync").onchange = async (e) => {
+  try {
+    await api("/api/agents/toggle-sync", {
+      method: "POST",
+      body: JSON.stringify({ enabled: e.target.checked })
+    });
+    showToast(e.target.checked ? "已开启全会话 AGENTS.md 热同步" : "已暂停全会话热同步");
+  } catch (err) {
+    showToast(err.message);
+    e.target.checked = !e.target.checked;
+  }
+};
+
+const agentsEditorEl = document.getElementById("agentsEditor");
+agentsEditorEl.addEventListener("input", () => {
+  updateAgentsLiveMeter();
+  clearTimeout(_diffPreviewTimer);
+  _diffPreviewTimer = setTimeout(() => {
+    if (agentsDirty) refreshAgentsDiffPreview();
+    else document.getElementById("agentsDiffBadge").textContent = "";
+  }, 320);
+});
+agentsEditorEl.addEventListener("keydown", (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
+    e.preventDefault();
+    saveAgentsContent();
+    return;
+  }
+  if (e.key === "Tab") {
+    e.preventDefault();
+    const start = agentsEditorEl.selectionStart;
+    const end = agentsEditorEl.selectionEnd;
+    const val = agentsEditorEl.value;
+    agentsEditorEl.value = val.slice(0, start) + "  " + val.slice(end);
+    agentsEditorEl.selectionStart = agentsEditorEl.selectionEnd = start + 2;
+    agentsEditorEl.dispatchEvent(new Event("input"));
+  }
+});
+
+document.getElementById("btnSnapModalClose").onclick = closeSnapshotDiffModal;
+document.getElementById("snapshotModalMask").onclick = (e) => {
+  if (e.target === e.currentTarget) closeSnapshotDiffModal();
+};
+document.getElementById("btnSnapModalRollback").onclick = () => {
+  closeSnapshotDiffModal();
+  if (_pendingRollbackSnap) openRollbackConfirm(_pendingRollbackSnap);
+};
+document.getElementById("btnRollbackCancel").onclick = closeRollbackConfirm;
+document.getElementById("rollbackModalMask").onclick = (e) => {
+  if (e.target === e.currentTarget) closeRollbackConfirm();
+};
+document.getElementById("btnRollbackOk").onclick = async () => {
+  if (!_pendingRollbackSnap) return;
+  const btn = document.getElementById("btnRollbackOk");
+  btn.disabled = true;
+  try {
+    const res = await api("/api/agents/rollback", {
+      method: "POST",
+      body: JSON.stringify({ id: _pendingRollbackSnap.id })
+    });
+    closeRollbackConfirm();
+    agentsData = res.state;
+    agentsDirty = false;
+    renderAgents(false);
+    showToast(res.unchanged ? "当前内容与该快照一致" : "已回滚并备份原版，旧会话下轮自动热同步");
+  } catch (e) {
+    showToast("回滚失败：" + e.message);
+  } finally {
+    btn.disabled = false;
+  }
+};
+
 try { applyTheme(localStorage.getItem("azure_compass_theme") || "dark"); } catch {}
+try {
+  const savedTab = sessionStorage.getItem("azure_compass_tab");
+  if (savedTab === "agents") switchViewTab("agents");
+} catch {}
 load();
+loadAgents();
 </script>
 
 <!-- AGY_UPDATE_CHECKER_WIDGET -->
