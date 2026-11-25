@@ -123,7 +123,7 @@ export async function handleStopHook(payload = {}, options = {}) {
   const needCompact = Boolean(signal.needCompact) || levelCritical;
 
   // ---------- 2) 增量沉淀入蓝汐 ----------
-  if (needCompact && sentinelCfg.autoExtractToLingshu !== false) {
+  if (needCompact && sentinelCfg.autoExtractToLanxi !== false) {
     try {
       const pipeline = options.runPipeline || runCompactPipeline;
       const extracted = await pipeline(

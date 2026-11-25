@@ -1337,7 +1337,7 @@ function render() {
     document.getElementById("valCrit").textContent = state.sentinel.criticalPercent + "%";
     document.getElementById("selWindow").value = String(state.sentinel.contextWindowTokens || 200000);
     document.getElementById("chkAutoCompact").checked = state.sentinel.autoCompactEnabled === true;
-    document.getElementById("chkAutoExtract").checked = state.sentinel.autoExtractToLingshu !== false;
+    document.getElementById("chkAutoExtract").checked = state.sentinel.autoExtractToLanxi !== false;
   }
   renderSentinelSignal();
   if (state.session) {
@@ -1495,7 +1495,7 @@ async function saveSentinel() {
     criticalPercent: Number(document.getElementById("rngCrit").value),
     contextWindowTokens: Number(document.getElementById("selWindow").value),
     autoCompactEnabled: document.getElementById("chkAutoCompact").checked,
-    autoExtractToLingshu: document.getElementById("chkAutoExtract").checked
+    autoExtractToLanxi: document.getElementById("chkAutoExtract").checked
   };
   const res = await api("/api/sentinel", { method: "POST", body: JSON.stringify(payload) });
   state.sentinel = res.sentinel;
