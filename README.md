@@ -46,7 +46,7 @@
 </td>
 <td width="50%" valign="top">
 <h4>🎛️ 苍蓝套件左侧栏入口总控</h4>
-集中管理本机已安装的 8 款苍蓝系列插件，一键单独开关任意插件在 Antigravity 左侧栏的全局快捷入口。
+集中管理本机已安装的 9 款苍蓝系列插件，一键单独开关任意插件在 Antigravity 左侧栏的全局快捷入口。
 </td>
 </tr>
 </table>
@@ -108,7 +108,7 @@
 - **全模型老会话零浪费热同步**：所有模型（含原生模型与外接模型）均由 `SessionStart` + `PreInvocation` 协同追踪文件哈希——规则未改时返回空响应（0 Token、不破坏 Prompt Cache），仅在改过后的下一轮对仍在运行的旧会话单次推送「变更 Diff 摘要 + 最新全文」，新会话自动跳过不重复注入。
 
 ### 6. 苍蓝套件 · 左侧栏快捷入口统一管理
-- 在面板底部集中展示本机已安装的苍蓝系列 8 款插件（苍蓝罗盘、苍蓝回廊、苍蓝星轨、苍蓝协奏台、蓝汐认知图谱、苍蓝魂匣、思语中文、苍蓝棱镜）；
+- 在面板底部集中展示本机已安装的苍蓝系列 9 款插件（苍蓝罗盘、苍蓝回廊、苍蓝星轨、苍蓝协奏台、蓝汐认知图谱、苍蓝魂匣、思语中文、苍蓝棱镜、苍蓝魔杖）；
 - 支持一键单独开启或关闭任意插件在 Antigravity 左侧栏的全局快捷入口（关闭左侧栏入口后，仍可在右侧辅助栏或通过对话正常打开）。
 
 ### 7. 苍蓝统一视觉与交互体系
@@ -189,7 +189,7 @@ git clone https://github.com/A16Nights/antigravity-azure-compass.git ~/.gemini/c
 </picture>
 </h2>
 
-**苍蓝套件（Azure Suite）** 8 款插件共享统一的 **Neko Glass 毛玻璃界面**、跨插件同步的 **苍蓝主题色调中心**（`~/.gemini/azure-theme.json`）以及可自由开关的 **左侧栏快捷入口**（`~/.gemini/azure-sidebar-nav.json`）：
+**苍蓝套件（Azure Suite）** 9 款插件共享统一的 **Neko Glass 毛玻璃界面**、跨插件同步的 **苍蓝主题色调中心**（`~/.gemini/azure-theme.json`）以及可自由开关的 **左侧栏快捷入口**（`~/.gemini/azure-sidebar-nav.json`）：
 
 | 插件 | 仓库 | 核心能力 |
 | --- | --- | --- |
@@ -201,6 +201,7 @@ git clone https://github.com/A16Nights/antigravity-azure-compass.git ~/.gemini/c
 | 💎 **苍蓝魂匣** | [antigravity-soul-md](https://github.com/A16Nights/antigravity-soul-md) | 多人设卡热切换、工作区专属绑定、外接模型智能防掉线锚点与分层文件记忆 |
 | 💭 **思语中文** | [antigravity-think-zh](https://github.com/A16Nights/antigravity-think-zh) | 内部思考语言简体中文 / 英文双档热切换、双通道防漂移与实时注入预览 |
 | 🔮 **苍蓝棱镜** | [antigravity-azure-prism](https://github.com/A16Nights/antigravity-azure-prism) | 原生 MCP App 思维链实时观测、免密钥零 Token 机翻与外部模型双通道译文 |
+| 🪄 **苍蓝魔杖** | [antigravity-azure-wand](https://github.com/A16Nights/antigravity-azure-wand) | Windows 桌面与网页低打扰操控台、独立输入 15 状态 AI 光标、套装画廊混搭与外部光标导入 |
 
 ---
 

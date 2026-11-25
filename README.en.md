@@ -61,7 +61,7 @@ Lists all installed Azure Suite plugins in one place and lets you toggle each pl
 <p align="center">
   <a href="assets/readme/preview-panel.png"><img src="assets/readme/preview-panel.png" alt="Azure Compass Panel Preview" width="90%"></a>
   <br><strong>Azure Compass · Mode Presets, Live Context Telemetry &amp; Suite Sidebar Hub</strong>
-  <br><sub>External-model PreInvocation toggle, 55%/72% auto /compact monitor, built-in &amp; custom presets, and 8-plugin sidebar toggles</sub>
+  <br><sub>External-model PreInvocation toggle, 55%/72% auto /compact monitor, built-in &amp; custom presets, and 9-plugin sidebar toggles</sub>
 </p>
 
 <h2 id="features">
@@ -100,7 +100,7 @@ Lists all installed Azure Suite plugins in one place and lets you toggle each pl
 - **Zero-Waste Hot-Sync Across All Models**: `SessionStart` and `PreInvocation` track content hashes per conversation for both native and external models—returning empty `{}` (zero tokens, Prompt Cache intact) when unchanged, and injecting the diff summary + latest rules once on the next turn of existing sessions when modified.
 
 ### 6. Azure Suite Left-Sidebar Shortcut Hub
-- Displays all 8 installed Azure Suite plugins at the bottom of the panel with individual switches to show or hide each plugin's left-sidebar shortcut.
+- Displays all 9 installed Azure Suite plugins at the bottom of the panel with individual switches to show or hide each plugin's left-sidebar shortcut.
 
 ### 7. Unified Azure Suite UI
 - **Neko Glass UI & Shared Theme Center**: Dark/light mode, custom glass dropdowns (`AzureSelect`), 6 official theme presets + dual custom pickers + 4 shared custom slots, standalone `Web UI`, and GitHub Release update checks.
@@ -116,7 +116,7 @@ Lists all installed Azure Suite plugins in one place and lets you toggle each pl
 flowchart TD
   A["Azure Compass Sidecar"] -->|"Switch Preset"| B["Atomic Write rules/AGENTS.md"]
   A -.->|"Bound Persona"| S["Soul.md Persona Switch"]
-  A -->|"Toggle Visibility"| N["~/.gemini/azure-sidebar-nav.json<br/>8-Plugin Sidebar Control"]
+  A -->|"Toggle Visibility"| N["~/.gemini/azure-sidebar-nav.json<br/>9-Plugin Sidebar Control"]
   H["SessionStart / PreInvocation"] -->|"external-model-guard"| M{"External Model Active?"}
   M -->|"Yes"| I["Inject Per-Turn Anchor"]
   M -->|"No (Native)"| K["Skip · Zero Overhead"]
@@ -178,7 +178,7 @@ Restart or reload Antigravity (`Ctrl+R`), enable **Azure Compass** in **Plugins*
 </picture>
 </h2>
 
-All **8 Azure Suite plugins** share a unified **Neko Glass UI**, synchronized **Azure Theme Center** (`~/.gemini/azure-theme.json`), and customizable **Sidebar Navigation Hub** (`~/.gemini/azure-sidebar-nav.json`):
+All **9 Azure Suite plugins** share a unified **Neko Glass UI**, synchronized **Azure Theme Center** (`~/.gemini/azure-theme.json`), and customizable **Sidebar Navigation Hub** (`~/.gemini/azure-sidebar-nav.json`):
 
 | Plugin | Repository | Core Capability |
 | --- | --- | --- |
@@ -190,6 +190,7 @@ All **8 Azure Suite plugins** share a unified **Neko Glass UI**, synchronized **
 | 💎 **Soul.md Studio** | [antigravity-soul-md](https://github.com/A16Nights/antigravity-soul-md) | Hot-swappable persona cards, workspace binding, external-model anchor & layered memory |
 | 💭 **Think-ZH** | [antigravity-think-zh](https://github.com/A16Nights/antigravity-think-zh) | Simplified Chinese / English reasoning switcher with dual-channel anti-drift hooks |
 | 🔮 **Azure Prism** | [antigravity-azure-prism](https://github.com/A16Nights/antigravity-azure-prism) | Native MCP App Chain-of-Thought viewer with keyless zero-token MT & LLM translation |
+| 🪄 **Azure Wand** | [antigravity-azure-wand](https://github.com/A16Nights/antigravity-azure-wand) | Low-intrusion Windows desktop & web automation with 15-state independent AI cursor, pack gallery & importer |
 
 ---
 
