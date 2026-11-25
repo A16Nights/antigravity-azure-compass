@@ -10,6 +10,11 @@ import { fileURLToPath } from "node:url";
 import { spawn } from "node:child_process";
 import { PresetStore, CONFIG_PATH } from "../../lib/store.mjs";
 import { AgentsSyncStore } from "../../lib/agents-sync.mjs";
+import {
+  getInstalledPluginsSnapshot,
+  checkAllPluginUpdates,
+  saveCustomRepoBinding
+} from "../../lib/plugin-updater.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const INDEX_HTML = path.join(__dirname, "index.html");
@@ -285,6 +290,54 @@ const server = http.createServer(async (req, res) => {
       const targetFile = st.target?.exists ? st.target.realPath : path.dirname(st.target?.realPath || CONFIG_PATH);
       openFileCrossPlatform(targetFile);
       sendJson(res, 200, { ok: true, path: targetFile });
+      return;
+    }
+
+    // ---------- 全机已装插件更新检查 API ----------
+    if (req.method === "GET" && pathname === "/api/plugins/updates") {
+      const refresh = url.searchParams.get("refresh") === "1";
+      const data = refresh
+        ? await checkAllPluginUpdates({ force: true })
+        : getInstalledPluginsSnapshot();
+      sendJson(res, 200, data);
+      return;
+    }
+
+    if (req.method === "POST" && pathname === "/api/plugins/updates/check") {
+      const body = await readBody(req);
+      const data = await checkAllPluginUpdates({
+        force: body.force !== false,
+        id: String(body.id || "").trim()
+      });
+      sendJson(res, 200, data);
+      return;
+    }
+
+    if (req.method === "POST" && pathname === "/api/plugins/updates/bind") {
+      const body = await readBody(req);
+      saveCustomRepoBinding(body.id, body.repo);
+      const data = body.repo
+        ? await checkAllPluginUpdates({ force: true, id: String(body.id || "").trim() })
+        : getInstalledPluginsSnapshot();
+      sendJson(res, 200, data);
+      return;
+    }
+
+    if (req.method === "POST" && pathname === "/api/open-url") {
+      const body = await readBody(req);
+      let parsed;
+      try {
+        parsed = new URL(String(body.url || "").trim());
+      } catch {
+        sendJson(res, 400, { ok: false, error: "无效链接" });
+        return;
+      }
+      if (parsed.protocol !== "https:" || parsed.hostname.toLowerCase() !== "github.com") {
+        sendJson(res, 403, { ok: false, error: "仅允许打开 GitHub 页面链接" });
+        return;
+      }
+      openFileCrossPlatform(parsed.toString());
+      sendJson(res, 200, { ok: true, url: parsed.toString() });
       return;
     }
 

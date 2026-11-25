@@ -735,6 +735,203 @@
   .modal.wide-modal .diff-viewer {
     max-height: 52vh;
   }
+  .tab-pill.has-upd {
+    background: rgba(245, 158, 11, 0.24) !important;
+    color: #fbbf24 !important;
+    font-weight: 700;
+  }
+  [data-theme="light"] .tab-pill.has-upd {
+    color: #b45309 !important;
+  }
+  .plugin-summary-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px 12px;
+  }
+  .plugin-stats {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 8px;
+    font-size: 12px;
+  }
+  .plugin-filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 10px;
+    margin-bottom: 12px;
+  }
+  .plugin-search {
+    flex: 1 1 180px;
+    min-width: 150px;
+    max-width: 280px;
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 12px;
+    outline: none;
+  }
+  .plugin-search:focus {
+    border-color: var(--accent);
+  }
+  .plugin-list {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+  .plugin-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 11px 13px;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .plugin-item.is-update {
+    border-color: rgba(245, 158, 11, 0.55);
+  }
+  .plugin-item-top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px 12px;
+  }
+  .plugin-item-main {
+    flex: 1 1 240px;
+    min-width: 0;
+  }
+  .plugin-item-title-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+  }
+  .plugin-item-name {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .plugin-item-id {
+    font-size: 11px;
+    font-family: "Cascadia Code", Consolas, monospace;
+    color: var(--muted);
+  }
+  .plugin-item-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 10px;
+    font-size: 11.5px;
+    color: var(--muted);
+  }
+  .plugin-item-right {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .plugin-ver-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-size: 11.5px;
+    font-family: "Cascadia Code", Consolas, monospace;
+    border: 1px solid var(--border);
+    background: var(--badge-bg);
+    color: var(--text);
+  }
+  .plugin-ver-pill.st-update {
+    border-color: rgba(245, 158, 11, 0.55);
+    background: rgba(245, 158, 11, 0.16);
+    color: #fbbf24;
+    font-weight: 600;
+  }
+  [data-theme="light"] .plugin-ver-pill.st-update { color: #b45309; }
+  .plugin-ver-pill.st-ok {
+    border-color: rgba(34, 197, 94, 0.36);
+    background: rgba(34, 197, 94, 0.13);
+    color: #86efac;
+  }
+  [data-theme="light"] .plugin-ver-pill.st-ok { color: #15803d; }
+  .plugin-ver-pill.st-ahead {
+    border-color: rgba(56, 189, 248, 0.36);
+    background: rgba(56, 189, 248, 0.14);
+    color: #7dd3fc;
+  }
+  [data-theme="light"] .plugin-ver-pill.st-ahead { color: #0369a1; }
+  .plugin-ver-pill.st-err {
+    border-color: rgba(247, 118, 142, 0.45);
+    background: rgba(247, 118, 142, 0.14);
+    color: #fda4af;
+  }
+  [data-theme="light"] .plugin-ver-pill.st-err { color: #be123c; }
+  .plugin-mini-btn {
+    padding: 3px 8px;
+    font-size: 11.5px;
+    border-radius: 7px;
+  }
+  .plugin-notes {
+    margin-top: 8px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    font-size: 11.5px;
+    color: var(--muted);
+    white-space: pre-wrap;
+    word-break: break-word;
+    line-height: 1.5;
+    max-height: 160px;
+    overflow: auto;
+  }
+  .plugin-summary-card {
+    margin-top: 10px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(56, 189, 248, 0.36);
+    background: rgba(15, 23, 42, 0.56);
+  }
+  [data-theme="light"] .plugin-summary-card {
+    background: rgba(248, 250, 252, 0.92);
+    border-color: rgba(2, 132, 199, 0.30);
+  }
+  .plugin-summary-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 6px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.20);
+    font-size: 12px;
+  }
+  .plugin-summary-pre {
+    user-select: text;
+    -webkit-user-select: text;
+    cursor: text;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-family: "Cascadia Code", Consolas, "Microsoft YaHei", monospace;
+    font-size: 12px;
+    line-height: 1.6;
+    max-height: 200px;
+    overflow-y: auto;
+    color: #bae6fd;
+  }
+  [data-theme="light"] .plugin-summary-pre {
+    color: #0f172a;
+  }
 </style>
 </head>
 <body>
@@ -755,6 +952,10 @@
     <button type="button" class="seg-btn view-tab" id="tabAgents" role="tab" aria-selected="false">
       <span>📜 全局 AGENTS.md</span>
       <span class="tab-pill" id="agentsTabBadge">--</span>
+    </button>
+    <button type="button" class="seg-btn view-tab" id="tabPlugins" role="tab" aria-selected="false">
+      <span>📦 插件更新</span>
+      <span class="tab-pill" id="pluginsTabBadge">--</span>
     </button>
   </div>
 
@@ -892,7 +1093,69 @@
     </div>
   </div>
 
+  <div id="viewPlugins" style="display:none;">
+    <div class="sentinel-box" style="margin-bottom:12px;">
+      <div class="plugin-summary-row">
+        <div class="plugin-stats">
+          <span style="font-weight:600;font-size:13px;">全机已装插件更新雷达</span>
+          <span class="badge" id="pluginsStatTotal">已装 0</span>
+          <span class="badge level-warn" id="pluginsStatUpdates" style="display:none;">0 可更新</span>
+          <span class="badge level-ok" id="pluginsStatOk" style="display:none;">0 最新</span>
+          <span id="pluginsLastChecked" style="font-size:11.5px;color:var(--muted);">尚未检查</span>
+        </div>
+        <div class="agents-editor-actions">
+          <button type="button" id="btnCopyPluginUpdates" style="display:none;" title="一键复制所有可更新插件的名称与版本文本">📋 一键复制更新清单</button>
+          <button type="button" id="btnTogglePluginSummary" style="display:none;" title="展开或收起可更新版本清单预览">清单预览</button>
+          <button type="button" class="primary" id="btnCheckAllPlugins">🔍 检查全部更新</button>
+        </div>
+      </div>
+      <div style="font-size:11.5px;color:var(--muted);margin-top:6px;">
+        100% 只读扫描本机插件目录，优先走免 GitHub API 限流通道比对最新版本；纯本地插件可手动绑定仓库纳入检查。
+      </div>
+      <div id="pluginSummaryCard" class="plugin-summary-card" style="display:none;">
+        <div class="plugin-summary-head">
+          <strong id="pluginSummaryTitle">📦 可更新版本清单（0）</strong>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <button type="button" class="plugin-mini-btn" id="btnCopyPluginSummaryInner">📋 一键复制</button>
+            <button type="button" class="plugin-mini-btn" id="btnClosePluginSummary">收起</button>
+          </div>
+        </div>
+        <div id="pluginSummaryText" class="plugin-summary-pre"></div>
+      </div>
+    </div>
+
+    <div class="plugin-filter-bar">
+      <div class="seg-group" id="pluginFilterGroup">
+        <button type="button" class="seg-btn active" data-pfilter="all">全部</button>
+        <button type="button" class="seg-btn" data-pfilter="has_update">有更新</button>
+        <button type="button" class="seg-btn" data-pfilter="azure">苍蓝套件</button>
+        <button type="button" class="seg-btn" data-pfilter="third_party">第三方</button>
+        <button type="button" class="seg-btn" data-pfilter="local_only">未绑定</button>
+      </div>
+      <input type="text" id="pluginSearchInput" class="plugin-search" placeholder="筛选插件名 / ID / 仓库..." />
+    </div>
+
+    <div id="pluginsList" class="plugin-list">
+      <div style="font-size:12px;color:var(--muted);padding:12px 4px;">正在读取已装插件列表...</div>
+    </div>
+  </div>
+
   <div class="toast" id="toast"></div>
+
+  <div class="modal-mask" id="bindRepoModalMask">
+    <div class="modal confirm-modal" role="dialog" aria-modal="true" aria-labelledby="bindRepoTitle">
+      <h2 id="bindRepoTitle">绑定上游 GitHub 仓库</h2>
+      <p class="confirm-note" id="bindRepoMeta" style="margin-bottom:10px;"></p>
+      <div class="field">
+        <label>GitHub 仓库（支持 owner/repo 或完整链接，留空则解除绑定）</label>
+        <input id="bindRepoInput" placeholder="例如：owner/repo 或 https://github.com/owner/repo" />
+      </div>
+      <div class="modal-actions">
+        <button type="button" id="btnBindRepoCancel">取消</button>
+        <button type="button" class="primary" id="btnBindRepoSave">保存并检查</button>
+      </div>
+    </div>
+  </div>
 
   <div class="modal-mask" id="snapshotModalMask">
     <div class="modal wide-modal" role="dialog" aria-modal="true" aria-labelledby="snapModalTitle">
@@ -1366,7 +1629,7 @@ document.getElementById("btnRefresh").onclick = async () => {
   const btn = document.getElementById("btnRefresh");
   btn.classList.add("spinning");
   try {
-    await Promise.all([load(), loadAgents({ keepDraft: true })]);
+    await Promise.all([load(), loadAgents({ keepDraft: true }), loadPluginUpdates()]);
     showToast(agentsDirty ? "已刷新状态（已保留编辑器未保存草稿）" : "已刷新最新状态");
   } finally {
     setTimeout(() => btn.classList.remove("spinning"), 260);
@@ -1409,18 +1672,35 @@ function normalizeLfStr(s) {
 }
 
 function switchViewTab(tab) {
-  activeViewTab = tab === "agents" ? "agents" : "presets";
+  activeViewTab = tab === "agents" ? "agents" : tab === "plugins" ? "plugins" : "presets";
+  const isPresets = activeViewTab === "presets";
   const isAgents = activeViewTab === "agents";
-  document.getElementById("viewPresets").style.display = isAgents ? "none" : "";
+  const isPlugins = activeViewTab === "plugins";
+  document.getElementById("viewPresets").style.display = isPresets ? "" : "none";
   document.getElementById("viewAgents").style.display = isAgents ? "" : "none";
+  document.getElementById("viewPlugins").style.display = isPlugins ? "" : "none";
   const tPresets = document.getElementById("tabPresets");
   const tAgents = document.getElementById("tabAgents");
-  tPresets.classList.toggle("active", !isAgents);
+  const tPlugins = document.getElementById("tabPlugins");
+  tPresets.classList.toggle("active", isPresets);
   tAgents.classList.toggle("active", isAgents);
-  tPresets.setAttribute("aria-selected", String(!isAgents));
+  tPlugins.classList.toggle("active", isPlugins);
+  tPresets.setAttribute("aria-selected", String(isPresets));
   tAgents.setAttribute("aria-selected", String(isAgents));
+  tPlugins.setAttribute("aria-selected", String(isPlugins));
   try { sessionStorage.setItem("azure_compass_tab", activeViewTab); } catch {}
   if (isAgents && !agentsData) loadAgents();
+  if (isPlugins) {
+    if (!pluginsState) {
+      loadPluginUpdates().then(() => {
+        if (pluginsState && pluginsState.counts && pluginsState.counts.unchecked > 0 && !pluginsCheckingAll) {
+          triggerPluginUpdateCheck({ force: false });
+        }
+      });
+    } else if (pluginsState.counts && pluginsState.counts.unchecked > 0 && !pluginsCheckingAll) {
+      triggerPluginUpdateCheck({ force: false });
+    }
+  }
 }
 
 function updateAgentsLiveMeter() {
@@ -1747,13 +2027,409 @@ document.getElementById("btnRollbackOk").onclick = async () => {
   }
 };
 
+// ---------- 全机已装插件更新检查 ----------
+let pluginsState = null;
+let pluginsFilter = "all";
+let pluginsSearch = "";
+let pluginsCheckingAll = false;
+const pluginsCheckingIds = new Set();
+let _bindingPlugin = null;
+let pluginSummaryOpen = false;
+let _pluginCopyTimer = null;
+
+function formatUpdatablePluginsText(items) {
+  const list = (items || []).filter((it) => it.status === "has_update");
+  if (list.length === 0) return "";
+  return list
+    .map((it) => {
+      const same = String(it.displayName || "").trim().toLowerCase() === String(it.id || "").trim().toLowerCase();
+      const title = same || !it.id ? (it.displayName || it.id) : `${it.displayName} (${it.id})`;
+      return `${title}\n${it.currentVersion || "?"} → ${it.latestVersion || "?"}`;
+    })
+    .join("\n");
+}
+
+async function copyTextReliable(text) {
+  const value = String(text || "");
+  if (!value) return false;
+  try {
+    if (navigator?.clipboard?.writeText) {
+      await navigator.clipboard.writeText(value);
+      return true;
+    }
+  } catch {}
+  try {
+    const ta = document.createElement("textarea");
+    ta.value = value;
+    ta.setAttribute("readonly", "");
+    ta.style.cssText = "position:fixed;top:-9999px;left:-9999px;opacity:0;";
+    document.body.appendChild(ta);
+    ta.select();
+    const ok = document.execCommand("copy");
+    ta.remove();
+    return Boolean(ok);
+  } catch {
+    return false;
+  }
+}
+
+async function copyUpdatablePluginsSummary() {
+  const updatable = (pluginsState?.items || []).filter((it) => it.status === "has_update");
+  const text = formatUpdatablePluginsText(updatable);
+  if (!text) {
+    showToast("当前没有可更新的插件");
+    return;
+  }
+  const ok = await copyTextReliable(text);
+  const btnTop = document.getElementById("btnCopyPluginUpdates");
+  const btnInner = document.getElementById("btnCopyPluginSummaryInner");
+  if (ok) {
+    if (btnTop) btnTop.textContent = "✅ 已复制";
+    if (btnInner) btnInner.textContent = "✅ 已复制";
+    clearTimeout(_pluginCopyTimer);
+    _pluginCopyTimer = setTimeout(() => {
+      if (btnTop) btnTop.textContent = "📋 一键复制更新清单";
+      if (btnInner) btnInner.textContent = "📋 一键复制";
+    }, 1800);
+    showToast(`已复制 ${updatable.length} 个可更新插件清单`);
+  } else {
+    pluginSummaryOpen = true;
+    renderPluginsList();
+    showToast("自动复制受限，已展开清单文本供手动复制");
+  }
+}
+
+function categoryLabel(cat) {
+  if (cat === "azure") return "苍蓝套件";
+  if (cat === "marketplace") return "官方/市场";
+  if (cat === "github") return "GitHub";
+  return "本地";
+}
+
+function updatePluginsTabBadge() {
+  const pill = document.getElementById("pluginsTabBadge");
+  if (!pill) return;
+  if (!pluginsState || !pluginsState.counts) {
+    pill.textContent = "--";
+    pill.classList.remove("has-upd");
+    return;
+  }
+  const { total, hasUpdate } = pluginsState.counts;
+  if (hasUpdate > 0) {
+    pill.textContent = `⬆ ${hasUpdate}`;
+    pill.classList.add("has-upd");
+  } else {
+    pill.textContent = `${total} 个`;
+    pill.classList.remove("has-upd");
+  }
+}
+
+async function openGithubUrl(url) {
+  if (!url) return;
+  try {
+    const res = await api("/api/open-url", {
+      method: "POST",
+      body: JSON.stringify({ url })
+    });
+    if (res && res.ok) return;
+  } catch {}
+  try { await navigator.clipboard?.writeText(url); } catch {}
+  try { window.open(url, "_blank", "noopener"); } catch {}
+  showToast("已尝试打开并复制链接：" + url);
+}
+
+function openBindRepoModal(item) {
+  _bindingPlugin = item;
+  document.getElementById("bindRepoTitle").textContent = `绑定仓库 · ${item.displayName}`;
+  document.getElementById("bindRepoMeta").textContent = `插件目录：${item.id}（当前版本 v${item.currentVersion}）`;
+  const inp = document.getElementById("bindRepoInput");
+  inp.value = item.repo || "";
+  document.getElementById("bindRepoModalMask").classList.add("open");
+  setTimeout(() => inp.focus(), 40);
+}
+
+function closeBindRepoModal() {
+  _bindingPlugin = null;
+  document.getElementById("bindRepoModalMask").classList.remove("open");
+}
+
+function renderPluginsList() {
+  updatePluginsTabBadge();
+  const listEl = document.getElementById("pluginsList");
+  if (!listEl) return;
+  if (!pluginsState) {
+    listEl.innerHTML = '<div style="font-size:12px;color:var(--muted);padding:12px 4px;">正在读取已装插件列表...</div>';
+    return;
+  }
+  const c = pluginsState.counts || {};
+  document.getElementById("pluginsStatTotal").textContent = `已装 ${c.total || 0}`;
+  const updEl = document.getElementById("pluginsStatUpdates");
+  updEl.style.display = (c.hasUpdate || 0) > 0 ? "" : "none";
+  updEl.textContent = `⬆ ${c.hasUpdate || 0} 可更新`;
+  const okEl = document.getElementById("pluginsStatOk");
+  okEl.style.display = (c.upToDate || 0) > 0 ? "" : "none";
+  okEl.textContent = `✓ ${c.upToDate || 0} 最新`;
+  document.getElementById("pluginsLastChecked").textContent = pluginsState.lastCheckedAt
+    ? "上次检查：" + formatLocalTime(new Date(pluginsState.lastCheckedAt).toISOString())
+    : "尚未执行远端检查";
+
+  const btnAll = document.getElementById("btnCheckAllPlugins");
+  if (btnAll) {
+    btnAll.disabled = pluginsCheckingAll;
+    btnAll.textContent = pluginsCheckingAll ? "检查中..." : "🔍 检查全部更新";
+  }
+
+  const updatableItems = (pluginsState.items || []).filter((it) => it.status === "has_update");
+  const btnCopyTop = document.getElementById("btnCopyPluginUpdates");
+  const btnToggleSum = document.getElementById("btnTogglePluginSummary");
+  const sumCard = document.getElementById("pluginSummaryCard");
+  if (btnCopyTop) btnCopyTop.style.display = updatableItems.length > 0 ? "" : "none";
+  if (btnToggleSum) {
+    btnToggleSum.style.display = updatableItems.length > 0 ? "" : "none";
+    btnToggleSum.textContent = pluginSummaryOpen ? "收起清单" : "清单预览";
+  }
+  if (sumCard) {
+    if (pluginSummaryOpen && updatableItems.length > 0) {
+      sumCard.style.display = "";
+      document.getElementById("pluginSummaryTitle").textContent = `📦 可更新版本清单（${updatableItems.length}）`;
+      document.getElementById("pluginSummaryText").textContent = formatUpdatablePluginsText(updatableItems);
+    } else {
+      sumCard.style.display = "none";
+    }
+  }
+
+  const kw = pluginsSearch.trim().toLowerCase();
+  const statusWeight = {
+    has_update: 0,
+    error: 1,
+    unchecked: 2,
+    ahead: 3,
+    up_to_date: 4,
+    marketplace_managed: 5,
+    unreleased: 6,
+    local_only: 7
+  };
+  const filtered = (pluginsState.items || [])
+    .filter((it) => {
+      if (pluginsFilter === "has_update" && it.status !== "has_update") return false;
+      if (pluginsFilter === "azure" && it.category !== "azure") return false;
+      if (pluginsFilter === "third_party" && it.category === "azure") return false;
+      if (pluginsFilter === "local_only" && it.status !== "local_only" && it.status !== "unreleased") return false;
+      if (kw) {
+        const hay = `${it.displayName} ${it.id} ${it.repo || ""} ${it.description || ""}`.toLowerCase();
+        if (!hay.includes(kw)) return false;
+      }
+      return true;
+    })
+    .sort((a, b) => {
+      const wa = statusWeight[a.status] ?? 9;
+      const wb = statusWeight[b.status] ?? 9;
+      if (wa !== wb) return wa - wb;
+      return a.displayName.localeCompare(b.displayName, "zh-CN");
+    });
+
+  if (filtered.length === 0) {
+    listEl.innerHTML = '<div style="font-size:12px;color:var(--muted);padding:16px 4px;text-align:center;">当前筛选条件下暂无插件记录。</div>';
+    return;
+  }
+
+  listEl.innerHTML = "";
+  for (const it of filtered) {
+    const row = document.createElement("div");
+    row.className = "plugin-item" + (it.status === "has_update" ? " is-update" : "");
+
+    let pillCls = "plugin-ver-pill";
+    let pillText = `v${it.currentVersion}`;
+    if (pluginsCheckingIds.has(it.id)) {
+      pillText = `v${it.currentVersion} · 检查中...`;
+    } else if (it.status === "has_update") {
+      pillCls += " st-update";
+      pillText = `v${it.currentVersion} → v${it.latestVersion}`;
+    } else if (it.status === "up_to_date") {
+      pillCls += " st-ok";
+      pillText = `✓ v${it.currentVersion} 最新`;
+    } else if (it.status === "ahead") {
+      pillCls += " st-ahead";
+      pillText = `v${it.currentVersion}（领先 v${it.latestVersion}）`;
+    } else if (it.status === "marketplace_managed") {
+      pillText = `v${it.currentVersion} · 市场渠道托管`;
+    } else if (it.status === "unreleased") {
+      pillText = `v${it.currentVersion} · 远端未发布`;
+    } else if (it.status === "error") {
+      pillCls += " st-err";
+      pillText = `v${it.currentVersion} · ${it.error || "检查失败"}`;
+    } else if (it.status === "local_only") {
+      pillText = `v${it.currentVersion} · 仅本地`;
+    } else {
+      pillText = `v${it.currentVersion} · 待检查`;
+    }
+
+    const top = document.createElement("div");
+    top.className = "plugin-item-top";
+
+    const main = document.createElement("div");
+    main.className = "plugin-item-main";
+    main.innerHTML = `
+      <div class="plugin-item-title-row">
+        <span class="plugin-item-name">${escapeHtml(it.displayName)}</span>
+        <span class="plugin-item-id">${escapeHtml(it.id)}</span>
+        <span class="badge">${escapeHtml(categoryLabel(it.category))}</span>
+        ${it.enabled === false ? '<span class="badge level-over">已停用</span>' : ""}
+      </div>
+      <div class="plugin-item-meta">
+        <span>${it.repo ? `仓库：${escapeHtml(it.repo)}` : "未识别到 GitHub 上游仓库"}</span>
+        ${it.releaseName && it.status === "has_update" ? `<span>新版：${escapeHtml(it.releaseName)}</span>` : ""}
+      </div>
+    `;
+
+    const right = document.createElement("div");
+    right.className = "plugin-item-right";
+
+    const pill = document.createElement("span");
+    pill.className = pillCls;
+    pill.textContent = pillText;
+    right.appendChild(pill);
+
+    if (it.repo) {
+      const btnOne = document.createElement("button");
+      btnOne.type = "button";
+      btnOne.className = "plugin-mini-btn";
+      btnOne.textContent = pluginsCheckingIds.has(it.id) ? "..." : "重查";
+      btnOne.disabled = pluginsCheckingIds.has(it.id) || pluginsCheckingAll;
+      btnOne.onclick = () => triggerPluginUpdateCheck({ force: true, id: it.id });
+      right.appendChild(btnOne);
+
+      const btnOpen = document.createElement("button");
+      btnOpen.type = "button";
+      btnOpen.className = it.status === "has_update" ? "plugin-mini-btn primary" : "plugin-mini-btn";
+      btnOpen.textContent = it.status === "has_update" ? "查看新版" : "仓库";
+      btnOpen.onclick = () => openGithubUrl(it.releaseUrl || it.repoUrl);
+      right.appendChild(btnOpen);
+    }
+
+    const btnBind = document.createElement("button");
+    btnBind.type = "button";
+    btnBind.className = "plugin-mini-btn";
+    btnBind.textContent = it.repo ? (it.isCustomBound ? "改绑" : "绑定") : "绑定仓库";
+    btnBind.title = "手动绑定或修改上游 GitHub 仓库";
+    btnBind.onclick = () => openBindRepoModal(it);
+    right.appendChild(btnBind);
+
+    top.appendChild(main);
+    top.appendChild(right);
+    row.appendChild(top);
+
+    if (it.releaseNotes && it.status === "has_update") {
+      const notes = document.createElement("div");
+      notes.className = "plugin-notes";
+      notes.textContent = it.releaseNotes;
+      row.appendChild(notes);
+    }
+    listEl.appendChild(row);
+  }
+}
+
+async function loadPluginUpdates() {
+  try {
+    pluginsState = await api("/api/plugins/updates");
+    renderPluginsList();
+  } catch (e) {
+    const listEl = document.getElementById("pluginsList");
+    if (listEl) listEl.innerHTML = `<div style="font-size:12px;color:var(--danger);padding:8px;">加载插件清单失败：${escapeHtml(e.message)}</div>`;
+  }
+}
+
+async function triggerPluginUpdateCheck({ force = true, id = "" } = {}) {
+  if (id) {
+    pluginsCheckingIds.add(id);
+  } else {
+    if (pluginsCheckingAll) return;
+    pluginsCheckingAll = true;
+  }
+  renderPluginsList();
+  try {
+    pluginsState = await api("/api/plugins/updates/check", {
+      method: "POST",
+      body: JSON.stringify({ force, id })
+    });
+    const updCount = pluginsState?.counts?.hasUpdate || 0;
+    if (id) {
+      const target = (pluginsState?.items || []).find((x) => x.id === id);
+      if (target?.status === "has_update") showToast(`${target.displayName} 发现新版本 v${target.latestVersion}`);
+      else if (target?.status === "up_to_date") showToast(`${target.displayName} 已是最新 v${target.currentVersion}`);
+      else if (target?.status === "ahead") showToast(`${target.displayName} 当前版本领先远端`);
+      else if (target?.error) showToast(`${target.displayName} 检查失败：${target.error}`);
+    } else {
+      showToast(updCount > 0 ? `检查完成：发现 ${updCount} 个插件有新版本` : "检查完成：已检测插件均为最新");
+    }
+  } catch (e) {
+    showToast("检查插件更新失败：" + e.message);
+  } finally {
+    if (id) pluginsCheckingIds.delete(id);
+    else pluginsCheckingAll = false;
+    renderPluginsList();
+  }
+}
+
+document.getElementById("tabPlugins").onclick = () => switchViewTab("plugins");
+document.getElementById("btnCheckAllPlugins").onclick = () => triggerPluginUpdateCheck({ force: true });
+document.getElementById("btnCopyPluginUpdates").onclick = () => copyUpdatablePluginsSummary();
+document.getElementById("btnCopyPluginSummaryInner").onclick = () => copyUpdatablePluginsSummary();
+document.getElementById("btnTogglePluginSummary").onclick = () => {
+  pluginSummaryOpen = !pluginSummaryOpen;
+  renderPluginsList();
+};
+document.getElementById("btnClosePluginSummary").onclick = () => {
+  pluginSummaryOpen = false;
+  renderPluginsList();
+};
+document.getElementById("pluginFilterGroup").addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-pfilter]");
+  if (!btn) return;
+  pluginsFilter = btn.getAttribute("data-pfilter") || "all";
+  document.querySelectorAll("#pluginFilterGroup [data-pfilter]").forEach((b) => {
+    b.classList.toggle("active", b === btn);
+  });
+  renderPluginsList();
+});
+document.getElementById("pluginSearchInput").addEventListener("input", (e) => {
+  pluginsSearch = e.target.value || "";
+  renderPluginsList();
+});
+document.getElementById("btnBindRepoCancel").onclick = closeBindRepoModal;
+document.getElementById("bindRepoModalMask").onclick = (e) => {
+  if (e.target === e.currentTarget) closeBindRepoModal();
+};
+document.getElementById("btnBindRepoSave").onclick = async () => {
+  if (!_bindingPlugin) return;
+  const btn = document.getElementById("btnBindRepoSave");
+  const repo = document.getElementById("bindRepoInput").value.trim();
+  const targetId = _bindingPlugin.id;
+  btn.disabled = true;
+  try {
+    pluginsState = await api("/api/plugins/updates/bind", {
+      method: "POST",
+      body: JSON.stringify({ id: targetId, repo })
+    });
+    closeBindRepoModal();
+    renderPluginsList();
+    showToast(repo ? "已绑定仓库并完成版本检查" : "已清除自定义仓库绑定");
+  } catch (e) {
+    showToast("保存失败：" + e.message);
+  } finally {
+    btn.disabled = false;
+  }
+};
+
 try { applyTheme(localStorage.getItem("azure_compass_theme") || "dark"); } catch {}
 try {
   const savedTab = sessionStorage.getItem("azure_compass_tab");
   if (savedTab === "agents") switchViewTab("agents");
+  else if (savedTab === "plugins") switchViewTab("plugins");
 } catch {}
 load();
 loadAgents();
+loadPluginUpdates();
 </script>
 
 <!-- AGY_UPDATE_CHECKER_WIDGET -->
