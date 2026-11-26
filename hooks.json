@@ -14,6 +14,14 @@
         "timeout": 5
       }
     ],
+    "PreToolUse": [
+      {
+        "matcher": "read_file|view_file|Read",
+        "type": "command",
+        "command": "node ./hooks/pre-tool-use.mjs",
+        "timeout": 5
+      }
+    ],
     "Stop": [
       {
         "type": "command",

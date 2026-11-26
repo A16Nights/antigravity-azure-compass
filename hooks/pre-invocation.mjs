@@ -14,6 +14,7 @@ import {
 } from "../lib/store.mjs";
 import { evaluateAgentsHotSync } from "../lib/agents-sync.mjs";
 import { isExternalModel } from "../lib/external-model-guard.mjs";
+import { formatMb, summarizeMediaCounts } from "../lib/media-guard.mjs";
 
 const LEVEL_RANK = { none: 0, ok: 0, warn: 1, critical: 2 };
 
@@ -120,7 +121,9 @@ export async function handlePreInvocation(input = {}, options = {}) {
             lastError: "",
             lastPercent: 0,
             lastTokens: 0,
-            lastExtractedLine: 0
+            lastExtractedLine: 0,
+            mediaWarnedLevel: "none",
+            mediaWarnedTurnKey: null
           },
           dataDir
         );
@@ -199,6 +202,59 @@ export async function handlePreInvocation(input = {}, options = {}) {
             lastAttemptAt: 0,
             lastPercent: status.percent,
             lastTokens: status.estimatedTokens
+          },
+          dataDir
+        );
+      }
+    }
+
+    // ---------- 2.5) 媒体载荷水位监测（防大媒体每轮全量重传装死） ----------
+    const mediaStatus = status.found ? status.media : null;
+    if (cfg.sentinel.mediaGuard?.enabled !== false && mediaStatus && mediaStatus.found) {
+      const mLevel = mediaStatus.level || "ok";
+      const curSig = loadSentinelSignal(dataDir);
+      if (mLevel === "critical" || mLevel === "warn") {
+        const mediaGate = shouldEmitSentinelWarning(
+          {
+            conversationId: curSig.conversationId,
+            warnedLevel: curSig.mediaWarnedLevel || "none",
+            warnedTurnKey: curSig.mediaWarnedTurnKey ?? null
+          },
+          { conversationId, userTurnKey, level: mLevel }
+        );
+        if (mediaGate.emit) {
+          const mbText = formatMb(mediaStatus.totalBytes);
+          const breakdown = summarizeMediaCounts(mediaStatus.counts);
+          const detail = breakdown ? `（${breakdown}）` : "";
+          if (mLevel === "critical") {
+            parts.push(
+              `[上下文监测 · 媒体载荷红灯] 当前会话自上次 CHECKPOINT 以来已累计二进制媒体 ${mbText} MB（${mediaStatus.fileCount} 个文件${detail}），已达到防装死红线 ${mediaStatus.blockMb} MB！请在回复末尾立即提醒用户：切勿在当前老对话中途切换模型（会触发冷重传），请立刻执行 /compact 清理历史媒体或新开会话；后续读图/视频请改派独立子代理隔离。`
+            );
+          } else {
+            parts.push(
+              `[上下文监测 · 媒体载荷黄灯] 当前会话自上次 CHECKPOINT 以来已累计二进制媒体 ${mbText} MB（${mediaStatus.fileCount} 个文件${detail}），接近防装死红线 ${mediaStatus.blockMb} MB。后续看图/看视频请优先派独立子代理（invoke_subagent）只返回文字结论，并提醒用户避免带大量媒体中途切换模型。`
+            );
+          }
+          patchSentinelSignal(
+            {
+              conversationId,
+              mediaWarnedLevel: mLevel,
+              mediaWarnedTurnKey: userTurnKey
+            },
+            dataDir
+          );
+        }
+      } else if (
+        conversationId &&
+        (!curSig.conversationId || curSig.conversationId === conversationId) &&
+        curSig.mediaWarnedLevel &&
+        curSig.mediaWarnedLevel !== "none"
+      ) {
+        patchSentinelSignal(
+          {
+            conversationId,
+            mediaWarnedLevel: "none",
+            mediaWarnedTurnKey: null
           },
           dataDir
         );

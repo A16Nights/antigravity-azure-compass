@@ -17,7 +17,7 @@
 </p>
 
 <p>
-  <strong>一键切换 Agent 工作模式预设 · 全局 AGENTS.md 全会话无损热同步 · 上下文水位监测与自动 /compact · 苍蓝套件左侧栏总控</strong>
+  <strong>一键切换 Agent 工作模式预设 · 全局 AGENTS.md 全会话无损热同步 · 上下文与媒体载荷防装死守卫 · 苍蓝套件左侧栏总控</strong>
 </p>
 
 <p>
@@ -41,8 +41,8 @@
 </tr>
 <tr>
 <td width="50%" valign="top">
-<h4>📈 上下文水位监测与自动 /compact</h4>
-实时读取活跃会话 <code>transcript.jsonl</code> 估算 Token 占比，提供 55%/72% 两级预警与一键/红线自动触发原生 <code>/compact</code> 压缩。
+<h4>📈 上下文水位与媒体载荷防装死守卫</h4>
+实时读取活跃会话 <code>transcript.jsonl</code> 估算 Token 占比与 <code>CHECKPOINT</code> 后累计媒体体积，提供 55%/72% 自动 <code>/compact</code> 联动与 12MB/20MB 媒体硬拦截防装死。
 </td>
 <td width="50%" valign="top">
 <h4>🎛️ 苍蓝套件左侧栏入口总控</h4>
@@ -100,6 +100,11 @@
 - **原生 `/compact` 压缩与蓝汐归档联动**：
   - 支持在面板一键触发 **「立即提炼并触发 `/compact`」**（通过本地 Language Server 接口触发原生上下文压缩，并联动蓝汐沉淀关键记忆）；
   - 支持开启 **「达到红线自动触发压缩」**，无需手动干预即可保持长会话清爽。
+- **媒体载荷守卫（防图片/视频每轮重传导致 `working` 装死）**：
+  - **精确字节计量 + `CHECKPOINT` 自动归零**：实时解析最近一次 `CHECKPOINT` 之后的用户上传（`.user_uploaded/*`）与工具读取媒体（`.system_generated/logs/media/*`），覆盖图片、视频、音频与 PDF。
+  - **双防线护栏（可自由调节阈值）**：
+    - **`PreToolUse` 入口硬拦截**：读取单个超大媒体（默认 > `10 MB`）或累计载荷触及红线（默认 > `20 MB`）时，直接弹红字拦截 `read_file` 并给出压缩/改派子代理/`/compact` 建议，对代码和文本读取零开销；
+    - **`PreInvocation` 对话兜底预警**：达到黄灯（默认 `12 MB`）或红灯（默认 `20 MB`）时回合级去重提醒，重点警示**切勿在塞满媒体的老对话中途切换模型**（避免服务端缓存失效触发冷重传）。
 
 ### 5. 全局 `AGENTS.md` 在线编辑与全会话无损热同步
 - **面板内双页签直编**：顶栏可一键切换 `🧭 模式预设与监测` 与 `📜 全局 AGENTS.md`，支持 `Ctrl+S` 保存、`Tab` 缩进与符号链接安全写入（若 `~/.gemini/config/AGENTS.md` 为软链接，直接覆写目标真文件，绝不破坏符号链接）。
@@ -132,6 +137,7 @@ flowchart TD
   M -->|"是"| I["注入每轮核心锚点"]
   M -->|"否（原生模型）"| K["跳过重复注入 · 零开销"]
   T["活跃会话 transcript.jsonl"] -->|"水位估算 55% / 72%"| C["一键或红线自动触发 /compact"]
+  T -->|"CHECKPOINT 后媒体统计"| G["PreToolUse / PreInvocation<br/>12MB 黄灯 · 20MB 硬拦截防装死"]
 ```
 
 <h2 id="installation">

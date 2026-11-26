@@ -17,7 +17,7 @@
 </p>
 
 <p>
-  <strong>One-click Agent mode presets, lossless global AGENTS.md hot-sync, live context telemetry with auto /compact, and Azure Suite sidebar hub</strong>
+  <strong>One-click Agent mode presets, lossless global AGENTS.md hot-sync, context & media payload anti-hang guard, and Azure Suite sidebar hub</strong>
 </p>
 
 <p>
@@ -41,8 +41,8 @@ Built-in <code>external-model-guard</code> injects per-turn anchors only when an
 </tr>
 <tr>
 <td width="50%" valign="top">
-<h4>📈 Context Telemetry & Auto /compact</h4>
-Reads active <code>transcript.jsonl</code> to estimate context fill, provides 55%/72% alerts, and triggers native <code>/compact</code> manually or automatically at the redline.
+<h4>📈 Context Telemetry & Media Anti-Hang Guard</h4>
+Tracks active <code>transcript.jsonl</code> token fill (55%/72% auto <code>/compact</code>) and post-<code>CHECKPOINT</code> binary media payload (12MB warn / 20MB hard deny) to prevent infinite <code>working</code> hangs.
 </td>
 <td width="50%" valign="top">
 <h4>🎛️ Azure Suite Sidebar Hub</h4>
@@ -92,6 +92,11 @@ Lists all installed Azure Suite plugins in one place and lets you toggle each pl
 - **Live Estimation**: Inspects the active conversation's `transcript.jsonl` to compute estimated context usage %, step count, and the latest `CHECKPOINT`.
 - **Two-Tier Thresholds**: Stage notice (default 55%) and high-priority redline warning (default 72%), with selectable window targets (`128k` / `200k` / `256k` / `500k` / `1M`).
 - **Native `/compact` & Memory Archival**: One-click **Distill & Trigger `/compact`** via the local Language Server API, or enable **Auto-Compact at Redline** for hands-free long sessions.
+- **Media Payload Guard (Anti-`working` Hang Protection)**:
+  - **Exact Byte Accounting & `CHECKPOINT` Reset**: Scans user-uploaded (`.user_uploaded/*`) and tool-loaded (`.system_generated/logs/media/*`) images, videos, audio, and PDFs accumulated since the latest `CHECKPOINT`.
+  - **Dual-Layer Defense**:
+    - **`PreToolUse` Hard Block**: Zero-overhead passthrough for code/text files; blocks oversized single media reads (default `> 10 MB`) or cumulative reads exceeding the redline (default `> 20 MB`) with actionable guidance (compress, delegate to a subagent, or `/compact`).
+    - **`PreInvocation` Deduplicated Alerts**: Injects yellow (`12 MB`) / red (`20 MB`) warnings and warns against mid-session model switching when heavy media is loaded (preventing cold cache re-uploads).
 
 ### 5. Global `AGENTS.md` Editor & Lossless Multi-Session Hot-Sync
 - **Dual-Tab In-Panel Editor**: Switch between `🧭 Mode Presets & Monitor` and `📜 Global AGENTS.md`, with `Ctrl+S` save, `Tab` indentation, and symlink-safe writing (resolves real target path without breaking `~/.gemini/config/AGENTS.md` symlinks).
@@ -121,6 +126,7 @@ flowchart TD
   M -->|"Yes"| I["Inject Per-Turn Anchor"]
   M -->|"No (Native)"| K["Skip · Zero Overhead"]
   T["Active transcript.jsonl"] -->|"55% / 72% Telemetry"| C["Manual or Auto /compact"]
+  T -->|"Post-CHECKPOINT Media"| G["PreToolUse / PreInvocation<br/>12MB Warn · 20MB Hard Block"]
 ```
 
 <h2 id="installation">
