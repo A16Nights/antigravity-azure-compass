@@ -33,18 +33,23 @@ export const COMPASS_ONBOARDING_GUIDE = {
       icon: "📊",
       navTitle: "水位与媒体守卫",
       title: "上下文 Token 水位监测 & 媒体载荷防装死",
-      desc: "实时盯着当前对话的上下文占用与图片/文件体积，接近红线提前提醒、自动提取要点或触发 /compact。",
+      desc: "自动跟随当前打开的对话，基于 API 实测 Token 与缓存命中率监控窗口占用，支持按模型自动识别上限、/compact 后首轮无损回注与媒体防装死。",
       spotlight: {
         clickBefore: "#tabPresets",
         selector: "#chkSentinel",
         buttonText: "定位水位守卫",
-        hint: "可自定义黄线/红线阈值、自动 /compact 与媒体体积硬拦截上限"
+        hint: "可选择「按模型自动识别」窗口、开启 /compact 自动压缩与压缩后无损回注，及媒体体积拦截线"
       },
       items: [
         {
           icon: "🌊",
-          title: "上下文水位表 & 自动压缩",
-          text: "按目标模型窗口设定警戒/危险阈值，超线自动建议或执行摘要压缩，避免长对话掉智。"
+          title: "实测 Token 水位 & 按模型自动识别窗口",
+          text: "读取最新 CHECKPOINT 后的实测 Token 与 KV-Cache 命中率，自动匹配当前模型窗口（如 200K / 400K / 1M），切对话或新建空白对话时面板瞬间同步。"
+        },
+        {
+          icon: "🔁",
+          title: "/compact 压缩前沉淀 + 压缩后首轮自动回注",
+          text: "压缩前自动提炼要点入蓝汐；完成手动或自动 /compact 后，下一轮自动无损带回核心要点、近期改动文件与最近校验线索（仅回注一次、不污染前缀）。"
         },
         {
           icon: "🖼️",

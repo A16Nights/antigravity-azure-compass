@@ -88,10 +88,10 @@ Lists all installed Azure Suite plugins in one place and lets you toggle each pl
 - **`SessionStart` Anchoring**: Injects active mode boundaries at the start of every new conversation.
 - **`PreInvocation` Guard (`external-model-guard`)**: Injects per-turn anchor reinforcement only for external custom models, skipping native Antigravity models automatically to save tokens. Toggleable from the top bar.
 
-### 4. Context Watermark Telemetry & Automatic `/compact`
-- **Live Estimation**: Inspects the active conversation's `transcript.jsonl` to compute estimated context usage %, step count, and the latest `CHECKPOINT`.
-- **Two-Tier Thresholds**: Stage notice (default 55%) and high-priority redline warning (default 72%), with selectable window targets (`128k` / `200k` / `256k` / `500k` / `1M`).
-- **Native `/compact` & Memory Archival**: One-click **Distill & Trigger `/compact`** via the local Language Server API, or enable **Auto-Compact at Redline** for hands-free long sessions.
+### 4. Live API Token Telemetry, Post-`/compact` Rehydration & Media Guard
+- **Real API Token Usage, Cache Hit Rate & Auto-Follow**: Reads actual `input_tokens + cache_read_tokens` and KV-Cache hit rate from the latest post-`CHECKPOINT` `PLANNER_RESPONSE` in `transcript.jsonl` (falling back to byte estimation when unavailable). Via native `/preload.js`, the side panel automatically follows the active conversation tab and resets cleanly on `+ New Conversation`.
+- **Auto Model Window Detection & Two-Tier Thresholds**: Defaults to **Auto by Model** (matching native limits such as `1M` for Gemini 2.5/3/4, `400K` for GPT-5/Codex, `200K` for Claude, with manual `128k` / `200k` / `256k` / `512k` / `1M` overrides), paired with stage notice (55%) and redline warning (72%).
+- **Pre-`/compact` Extraction + Post-`/compact` Lossless Auto-Rehydration**: Distills incremental progress into Lanxi Memory before triggering native `/compact`, and automatically injects a single redacted rehydration block (key bullets, recently modified files, latest verification step, and recent user intents) on the very first turn after any manual or automatic `/compact` without polluting subsequent turns.
 - **Media Payload Guard (Anti-`working` Hang Protection)**:
   - **Exact Byte Accounting & `CHECKPOINT` Reset**: Scans user-uploaded (`.user_uploaded/*`) and tool-loaded (`.system_generated/logs/media/*`) images, videos, audio, and PDFs accumulated since the latest `CHECKPOINT`.
   - **Dual-Layer Defense**:

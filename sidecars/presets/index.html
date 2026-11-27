@@ -1040,14 +1040,17 @@
       <div class="sentinel-item">
         <label><span>目标窗口基准</span></label>
         <select id="selWindow">
+          <option value="auto">按模型自动识别（推荐）</option>
           <option value="128000">128k tokens</option>
           <option value="200000">200k tokens</option>
           <option value="256000">256k tokens</option>
+          <option value="512000">512k tokens</option>
+          <option value="1000000">1M tokens</option>
         </select>
       </div>
     </div>
     <div class="meter-wrap">
-      <span id="meterLabel">当前会话估算：--</span>
+      <span id="meterLabel">当前会话监测：--</span>
       <div class="meter-bar"><div class="meter-fill" id="meterFill" style="width:0%"></div></div>
     </div>
     <div class="sentinel-controls" style="margin-top:10px;">
@@ -1058,6 +1061,10 @@
       <label class="toggle-label">
         <input type="checkbox" id="chkAutoExtract" />
         <span>自动提炼入蓝汐（压缩前沉淀增量记忆）</span>
+      </label>
+      <label class="toggle-label">
+        <input type="checkbox" id="chkAutoRehydrate" />
+        <span>压缩后自动回注（/compact 首轮无损带回要点与改动文件）</span>
       </label>
     </div>
     <div class="meter-wrap" style="margin-top:8px;align-items:center;">
@@ -1275,11 +1282,11 @@
       <h2 id="modalTitle">新建自定义预设</h2>
       <div class="field">
         <label>预设 ID（英文/数字）</label>
-        <input id="fId" placeholder="例如：xcw-code" />
+        <input id="fId" placeholder="例如：fast-code" />
       </div>
       <div class="field">
         <label>名称</label>
-        <input id="fName" placeholder="例如：小仓唯编码模式" />
+        <input id="fName" placeholder="例如：高效编码模式" />
       </div>
       <div class="field">
         <label>简介</label>
@@ -1287,7 +1294,7 @@
       </div>
       <div class="field">
         <label>联动 soul-md 人设卡（留空则不切换）</label>
-        <input id="fSoul" placeholder="例如：小仓唯 或 冷静工程助手" />
+        <input id="fSoul" placeholder="例如：默认助手 或 冷静工程助手" />
       </div>
       <div class="field">
         <label>每轮注入的底层锚点（PreInvocation 提示词）</label>
@@ -1412,7 +1419,17 @@ function renderSentinelSignal() {
   el.style.color = breakerOpen ? "var(--danger)" : failCount > 0 ? "var(--warn)" : "var(--muted)";
 }
 
+let _rendering = false;
 function render() {
+  _rendering = true;
+  try {
+    renderInner();
+  } finally {
+    _rendering = false;
+  }
+}
+
+function renderInner() {
   document.getElementById("chkReinforce").checked = state.perTurnReinforce;
   const active = state.presets.find((p) => p.id === state.activeId);
   document.getElementById("statusText").textContent = active ? `当前：${active.name}` : "";
@@ -1424,9 +1441,16 @@ function render() {
     document.getElementById("valWarn").textContent = state.sentinel.warnPercent + "%";
     document.getElementById("rngCrit").value = state.sentinel.criticalPercent;
     document.getElementById("valCrit").textContent = state.sentinel.criticalPercent + "%";
-    document.getElementById("selWindow").value = String(state.sentinel.contextWindowTokens || 200000);
+    const selWin = document.getElementById("selWindow");
+    const winVal = state.sentinel.autoWindow !== false ? "auto" : String(state.sentinel.contextWindowTokens || 200000);
+    if (selWin) {
+      selWin.value = [...selWin.options].some((o) => o.value === winVal) ? winVal : "auto";
+      selWin.dispatchEvent(new Event("change", { bubbles: true }));
+    }
     document.getElementById("chkAutoCompact").checked = state.sentinel.autoCompactEnabled === true;
     document.getElementById("chkAutoExtract").checked = state.sentinel.autoExtractToLanxi !== false;
+    const chkReh = document.getElementById("chkAutoRehydrate");
+    if (chkReh) chkReh.checked = state.sentinel.autoRehydrateAfterCompact !== false;
     const mg = state.sentinel.mediaGuard || { enabled: true, warnMb: 12, blockMb: 20, singleFileMaxMb: 10, blockEnabled: true };
     document.getElementById("chkMediaGuard").checked = mg.enabled !== false;
     document.getElementById("chkMediaBlock").checked = mg.blockEnabled !== false;
@@ -1444,9 +1468,13 @@ function render() {
     const s = state.session;
     const k = Math.round((s.estimatedTokens || 0) / 1000);
     const maxK = Math.round((s.contextWindowTokens || 200000) / 1000);
+    const maxLabel = maxK >= 1000 ? `${(maxK / 1000).toFixed(maxK % 1000 === 0 ? 0 : 1)}M` : `${maxK}k`;
+    const srcLabel = s.tokenSource === "api" ? "实测" : "估算";
+    const cacheText = typeof s.cacheHitRate === "number" ? ` · 缓存命中 ${s.cacheHitRate}%` : "";
+    const modelText = s.model ? ` · ${s.model}` : "";
     document.getElementById("meterLabel").textContent = s.found
-      ? `当前会话估算：约 ${k}k / ${maxK}k (${s.percent}%)`
-      : "当前会话估算：暂无活跃记录";
+      ? `当前会话${srcLabel}：${k}k / ${maxLabel} (${s.percent}%)${cacheText}${modelText}`
+      : (s.emptyNewSession ? "当前会话：新建空白对话（0 tokens）" : "当前会话监测：暂无活跃记录");
     const fill = document.getElementById("meterFill");
     fill.style.width = (s.percent || 0) + "%";
     fill.className = "meter-fill" + (s.level === "critical" ? " critical" : s.level === "warn" ? " warn" : "");
@@ -1519,8 +1547,26 @@ function render() {
   cGrid.appendChild(addCard);
 }
 
+function getActiveConversationId() {
+  try {
+    if (window.sidecar && typeof window.sidecar === "object") {
+      const scid = String(window.sidecar.conversationId || "").trim();
+      return scid || "__empty__";
+    }
+  } catch {}
+  try {
+    const qcid = String(new URLSearchParams(location.search).get("conversationId") || "").trim();
+    if (qcid) return qcid;
+  } catch {}
+  return "";
+}
+
+let _lastFollowedCid = null;
 async function load() {
-  state = await api("/api/state");
+  const cid = getActiveConversationId();
+  _lastFollowedCid = cid;
+  const qs = cid ? `?conversationId=${encodeURIComponent(cid)}` : "";
+  state = await api("/api/state" + qs);
   render();
 }
 
@@ -1628,6 +1674,7 @@ document.getElementById("chkReinforce").onchange = async (e) => {
 };
 
 async function saveSentinel() {
+  if (_rendering) return;
   let mediaWarnMb = Number(document.getElementById("rngMediaWarn").value);
   let mediaBlockMb = Number(document.getElementById("rngMediaBlock").value);
   if (mediaBlockMb <= mediaWarnMb + 1) {
@@ -1635,13 +1682,18 @@ async function saveSentinel() {
     document.getElementById("rngMediaBlock").value = mediaBlockMb;
     document.getElementById("valMediaBlock").textContent = mediaBlockMb + " MB";
   }
+  const winRaw = document.getElementById("selWindow").value;
+  const isAutoWin = winRaw === "auto";
   const payload = {
+    conversationId: getActiveConversationId(),
     enabled: document.getElementById("chkSentinel").checked,
     warnPercent: Number(document.getElementById("rngWarn").value),
     criticalPercent: Number(document.getElementById("rngCrit").value),
-    contextWindowTokens: Number(document.getElementById("selWindow").value),
+    autoWindow: isAutoWin,
+    contextWindowTokens: isAutoWin ? (state.sentinel?.contextWindowTokens || 200000) : Number(winRaw),
     autoCompactEnabled: document.getElementById("chkAutoCompact").checked,
     autoExtractToLanxi: document.getElementById("chkAutoExtract").checked,
+    autoRehydrateAfterCompact: document.getElementById("chkAutoRehydrate")?.checked !== false,
     mediaGuard: {
       enabled: document.getElementById("chkMediaGuard").checked,
       blockEnabled: document.getElementById("chkMediaBlock").checked,
@@ -1659,6 +1711,9 @@ async function saveSentinel() {
 document.getElementById("chkSentinel").onchange = saveSentinel;
 document.getElementById("chkAutoCompact").onchange = saveSentinel;
 document.getElementById("chkAutoExtract").onchange = saveSentinel;
+if (document.getElementById("chkAutoRehydrate")) {
+  document.getElementById("chkAutoRehydrate").onchange = saveSentinel;
+}
 document.getElementById("chkMediaGuard").onchange = saveSentinel;
 document.getElementById("chkMediaBlock").onchange = saveSentinel;
 document.getElementById("rngWarn").oninput = (e) => (document.getElementById("valWarn").textContent = e.target.value + "%");
@@ -2591,6 +2646,24 @@ try {
 load();
 loadAgents();
 loadPluginUpdates();
+
+let _followBusy = false;
+async function pollConversationFollow(force = false) {
+  if (_followBusy || document.hidden) return;
+  const cid = getActiveConversationId();
+  if (!force && cid === _lastFollowedCid) return;
+  _followBusy = true;
+  try {
+    await load();
+  } catch {} finally {
+    _followBusy = false;
+  }
+}
+setInterval(() => pollConversationFollow(false), 2500);
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) pollConversationFollow(true);
+});
+window.addEventListener("focus", () => pollConversationFollow(true));
 </script>
 
 <!-- AGY_UPDATE_CHECKER_WIDGET -->

@@ -135,8 +135,12 @@ const server = http.createServer(async (req, res) => {
     }
 
     if (req.method === "GET" && (pathname === "/" || pathname === "/index.html")) {
-      const html = fs.readFileSync(INDEX_HTML, "utf8");
-      res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
+      let html = fs.readFileSync(INDEX_HTML, "utf8");
+      // 注入 Antigravity 原生 /preload.js 以自动获取当前活跃 conversationId（独立浏览器打开时自动忽略）
+      if (!html.includes("/preload.js")) {
+        html = html.replace("<head>", '<head>\n<script src="/preload.js" onerror="void 0"></script>');
+      }
+      res.writeHead(200, { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store" });
       res.end(injectAzureOnboarding(injectAzureUiKit(injectSidebarToggleWidget(html, "agent-presets"), "agent-presets"), "agent-presets", COMPASS_ONBOARDING_GUIDE));
       return;
     }
@@ -185,7 +189,8 @@ const server = http.createServer(async (req, res) => {
     if (req.method === "GET" && pathname === "/api/state") {
       const cfg = store.getConfig();
       const presets = store.getAllPresets();
-      const session = store.inspectLatestSession();
+      const reqCid = String(url.searchParams.get("conversationId") || "").trim();
+      const session = store.inspectLatestSession(reqCid);
       sendJson(res, 200, {
         activeId: cfg.activeId,
         perTurnReinforce: cfg.perTurnReinforce,
@@ -200,8 +205,9 @@ const server = http.createServer(async (req, res) => {
 
     if (req.method === "POST" && pathname === "/api/sentinel") {
       const body = await readBody(req);
+      const reqCid = String(body.conversationId || url.searchParams.get("conversationId") || "").trim();
       const sentinel = store.updateSentinel(body);
-      const session = store.inspectLatestSession();
+      const session = store.inspectLatestSession(reqCid);
       sendJson(res, 200, { ok: true, sentinel, session });
       return;
     }

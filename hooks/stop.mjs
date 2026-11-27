@@ -138,7 +138,8 @@ export async function handleStopHook(payload = {}, options = {}) {
         signal = patchSentinelSignal(
           {
             lastExtractedLine: extracted.lastExtractedLine || 0,
-            lastExtractedAt: extracted.lastExtractedAt
+            lastExtractedAt: extracted.lastExtractedAt,
+            lastExtractedBullets: Array.isArray(extracted.bullets) ? extracted.bullets.slice(0, 5) : []
           },
           dataDir
         );

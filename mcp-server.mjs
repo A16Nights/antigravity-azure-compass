@@ -27,7 +27,7 @@ async function handleMessage(msg) {
           result: {
             protocolVersion: params?.protocolVersion || PROTOCOL_VERSION,
             capabilities: { tools: {}, resources: {} },
-            serverInfo: { name: "agent-presets-nav", version: "1.0.0" }
+            serverInfo: { name: "agent-presets-nav", version: "1.4.7" }
           }
         });
         return;

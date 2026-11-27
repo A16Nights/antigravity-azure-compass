@@ -15,6 +15,7 @@ import {
 import { evaluateAgentsHotSync } from "../lib/agents-sync.mjs";
 import { isExternalModel } from "../lib/external-model-guard.mjs";
 import { formatMb, summarizeMediaCounts } from "../lib/media-guard.mjs";
+import { buildPostCompactRehydration } from "../lib/transcript-telemetry.mjs";
 
 const LEVEL_RANK = { none: 0, ok: 0, warn: 1, critical: 2 };
 
@@ -122,6 +123,8 @@ export async function handlePreInvocation(input = {}, options = {}) {
             lastPercent: 0,
             lastTokens: 0,
             lastExtractedLine: 0,
+            lastExtractedBullets: [],
+            rehydratedCheckpoint: "",
             mediaWarnedLevel: "none",
             mediaWarnedTurnKey: null
           },
@@ -131,6 +134,48 @@ export async function handlePreInvocation(input = {}, options = {}) {
     }
 
     const status = store.inspectLatestSession(conversationId);
+
+    // ---------- 2.1) /compact 后自动无损回注（仅压缩后第一轮触发一次，不重复污染前缀） ----------
+    if (
+      status.found &&
+      status.compacted &&
+      status.checkpointMarker &&
+      cfg.sentinel.autoRehydrateAfterCompact !== false &&
+      conversationId
+    ) {
+      const curSig = loadSentinelSignal(dataDir);
+      const sameConv = !curSig.conversationId || curSig.conversationId === conversationId;
+      const alreadyRehydrated =
+        sameConv && String(curSig.rehydratedCheckpoint || "") === String(status.checkpointMarker);
+      // 仅在压缩后刚开始续聊（CHECKPOINT 之后尚未产生多轮回复，<=1 轮）时注入，避免首次打开历史已压缩老会话时误触发
+      const isFreshAfterCompact = Number(status.plannerTurnsAfterCheckpoint || 0) <= 1;
+      if (!alreadyRehydrated && isFreshAfterCompact) {
+        const rehydrationText = buildPostCompactRehydration(status.transcriptPath, {
+          lastBullets: sameConv ? curSig.lastExtractedBullets || [] : [],
+          lastExtractedAt: sameConv ? curSig.lastExtractedAt || "" : ""
+        });
+        if (rehydrationText) {
+          parts.push(rehydrationText);
+        }
+        patchSentinelSignal(
+          {
+            conversationId,
+            rehydratedCheckpoint: status.checkpointMarker
+          },
+          dataDir
+        );
+      } else if (!alreadyRehydrated) {
+        // 老会话此前早已压缩并继续聊了很多轮，直接标记已同步，避免后续反复判断
+        patchSentinelSignal(
+          {
+            conversationId,
+            rehydratedCheckpoint: status.checkpointMarker
+          },
+          dataDir
+        );
+      }
+    }
+
     if (status.found && (status.level === "critical" || status.level === "warn")) {
       const signal = loadSentinelSignal(dataDir);
       const gate = shouldEmitSentinelWarning(signal, {
@@ -141,13 +186,17 @@ export async function handlePreInvocation(input = {}, options = {}) {
 
       if (gate.emit) {
         const k = Math.round(status.estimatedTokens / 1000);
+        const winK = Math.round((status.contextWindowTokens || 200000) / 1000);
+        const srcTag = status.tokenSource === "api" ? "实测" : "估算约";
+        const cacheTag =
+          typeof status.cacheHitRate === "number" ? `，缓存命中 ${status.cacheHitRate}%` : "";
         if (status.level === "critical") {
           parts.push(
-            `[上下文监测 · 红线预警] 当前会话估算约 ${k}k tokens（${status.percent}%），已逼近原生自动压缩红线。请在回复末尾主动提醒用户：现在适合立刻执行 /compact 安全压缩，或将关键进度存入蓝汐后新开会话，避免触发原生黑盒压缩导致失忆。`
+            `[上下文监测 · 红线预警] 当前会话${srcTag} ${k}k / ${winK}k tokens（${status.percent}%${cacheTag}），已逼近原生自动压缩红线。请在回复末尾主动提醒用户：现在适合立刻执行 /compact 安全压缩，或将关键进度存入蓝汐后新开会话，避免触发原生黑盒压缩导致失忆。`
           );
         } else {
           parts.push(
-            `[上下文监测 · 预警] 当前会话估算约 ${k}k tokens（${status.percent}%）。若本轮刚好完成一个独立阶段，请在回复末尾顺带提醒用户可以执行 /compact 做一次主动压缩。`
+            `[上下文监测 · 预警] 当前会话${srcTag} ${k}k / ${winK}k tokens（${status.percent}%${cacheTag}）。若本轮刚好完成一个独立阶段，请在回复末尾顺带提醒用户可以执行 /compact 做一次主动压缩。`
           );
         }
         patchSentinelSignal(
