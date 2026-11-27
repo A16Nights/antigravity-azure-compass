@@ -133,7 +133,10 @@ export async function handlePreInvocation(input = {}, options = {}) {
       }
     }
 
-    const status = store.inspectLatestSession(conversationId);
+    const status =
+      typeof store.inspectLatestSessionLive === "function"
+        ? await store.inspectLatestSessionLive(conversationId, { timeoutMs: 900 })
+        : store.inspectLatestSession(conversationId);
 
     // ---------- 2.1) /compact 后自动无损回注（仅压缩后第一轮触发一次，不重复污染前缀） ----------
     if (

@@ -1466,17 +1466,23 @@ function renderInner() {
   renderSentinelSignal();
   if (state.session) {
     const s = state.session;
-    const k = Math.round((s.estimatedTokens || 0) / 1000);
-    const maxK = Math.round((s.contextWindowTokens || 200000) / 1000);
-    const maxLabel = maxK >= 1000 ? `${(maxK / 1000).toFixed(maxK % 1000 === 0 ? 0 : 1)}M` : `${maxK}k`;
+    const fmtTok = (n) => {
+      const num = Number(n || 0);
+      if (num >= 1000000) return `${(num / 1000000).toFixed(num % 1000000 === 0 ? 0 : 1)}M`;
+      return `${(num / 1000).toFixed(1)}k`;
+    };
+    const usedLabel = fmtTok(s.estimatedTokens || 0);
+    const maxLabel = fmtTok(s.contextWindowTokens || 200000);
+    const pctNum = Number(s.percent || 0);
+    const pctLabel = Number.isInteger(pctNum) ? `${pctNum}%` : `${pctNum.toFixed(1)}%`;
     const srcLabel = s.tokenSource === "api" ? "实测" : "估算";
     const cacheText = typeof s.cacheHitRate === "number" ? ` · 缓存命中 ${s.cacheHitRate}%` : "";
     const modelText = s.model ? ` · ${s.model}` : "";
     document.getElementById("meterLabel").textContent = s.found
-      ? `当前会话${srcLabel}：${k}k / ${maxLabel} (${s.percent}%)${cacheText}${modelText}`
+      ? `当前会话${srcLabel}：${usedLabel} / ${maxLabel} (${pctLabel})${cacheText}${modelText}`
       : (s.emptyNewSession ? "当前会话：新建空白对话（0 tokens）" : "当前会话监测：暂无活跃记录");
     const fill = document.getElementById("meterFill");
-    fill.style.width = (s.percent || 0) + "%";
+    fill.style.width = Math.min(100, pctNum) + "%";
     fill.className = "meter-fill" + (s.level === "critical" ? " critical" : s.level === "warn" ? " warn" : "");
 
     const m = s.media || { found: false, totalMb: 0, fileCount: 0, counts: {}, warnMb: 12, blockMb: 20, percent: 0, level: "ok" };

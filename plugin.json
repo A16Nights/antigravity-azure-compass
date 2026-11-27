@@ -1,7 +1,7 @@
 {
   "name": "agent-presets",
   "displayName": "苍蓝罗盘——Agent 预设与上下文监控",
-  "version": "1.4.7",
+  "version": "1.4.8",
   "description": "苍蓝罗盘——Agent 预设与上下文监控（Azure Compass）：Antigravity 工作模式预设中心、全局 AGENTS.md 热同步编辑器、上下文与媒体载荷防装死监测插件：内置标准/协奏台省流/极简/只读审查 4 套模式，支持自定义预设增删改、Soul.md 人设卡联动、外接模型智能防掉线、全局 AGENTS.md 在线编辑与全会话无损热同步（自动快照回滚 + 24 KB 提醒 + Diff 预览）、实测 API Token 与缓存命中率监测（按模型自动识别窗口、自动跟随当前对话、/compact 压缩前沉淀与压缩后首轮自动无损回注）、媒体载荷防装死守卫（PreToolUse 硬拦截 + PreInvocation 黄红灯预警，按 CHECKPOINT 自动重置），以及苍蓝套件左侧栏统一管理；内置首次使用交互式新手引导与真实控件定位高亮。",
   "logo": "assets/logo.svg",
   "suggestedPrompts": [

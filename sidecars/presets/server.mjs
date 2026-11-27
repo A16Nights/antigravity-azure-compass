@@ -190,7 +190,7 @@ const server = http.createServer(async (req, res) => {
       const cfg = store.getConfig();
       const presets = store.getAllPresets();
       const reqCid = String(url.searchParams.get("conversationId") || "").trim();
-      const session = store.inspectLatestSession(reqCid);
+      const session = await store.inspectLatestSessionLive(reqCid, { timeoutMs: 1200 });
       sendJson(res, 200, {
         activeId: cfg.activeId,
         perTurnReinforce: cfg.perTurnReinforce,
@@ -207,7 +207,7 @@ const server = http.createServer(async (req, res) => {
       const body = await readBody(req);
       const reqCid = String(body.conversationId || url.searchParams.get("conversationId") || "").trim();
       const sentinel = store.updateSentinel(body);
-      const session = store.inspectLatestSession(reqCid);
+      const session = await store.inspectLatestSessionLive(reqCid, { timeoutMs: 1200 });
       sendJson(res, 200, { ok: true, sentinel, session });
       return;
     }

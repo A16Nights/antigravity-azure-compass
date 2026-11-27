@@ -90,7 +90,7 @@ Lists all installed Azure Suite plugins in one place and lets you toggle each pl
 
 ### 4. Live API Token Telemetry, Post-`/compact` Rehydration & Media Guard
 - **Real API Token Usage, Cache Hit Rate & Auto-Follow**: Reads actual `input_tokens + cache_read_tokens` and KV-Cache hit rate from the latest post-`CHECKPOINT` `PLANNER_RESPONSE` in `transcript.jsonl` (falling back to byte estimation when unavailable). Via native `/preload.js`, the side panel automatically follows the active conversation tab and resets cleanly on `+ New Conversation`.
-- **Auto Model Window Detection & Two-Tier Thresholds**: Defaults to **Auto by Model** (matching native limits such as `1M` for Gemini 2.5/3/4, `400K` for GPT-5/Codex, `200K` for Claude, with manual `128k` / `200k` / `256k` / `512k` / `1M` overrides), paired with stage notice (55%) and redline warning (72%).
+- **Official Live Model Window Sync & Two-Tier Thresholds**: Defaults to **Auto by Model**, querying Antigravity's local Language Server for the active conversation's live `maxContextTokens` so switching to any model (Gemini / Claude / GPT / future models) stays 100% aligned with Antigravity's native context popover (with local model-table fallback and manual `128k` / `200k` / `256k` / `512k` / `1M` overrides), paired with stage notice (55%) and redline warning (72%).
 - **Pre-`/compact` Extraction + Post-`/compact` Lossless Auto-Rehydration**: Distills incremental progress into Lanxi Memory before triggering native `/compact`, and automatically injects a single redacted rehydration block (key bullets, recently modified files, latest verification step, and recent user intents) on the very first turn after any manual or automatic `/compact` without polluting subsequent turns.
 - **Media Payload Guard (Anti-`working` Hang Protection)**:
   - **Exact Byte Accounting & `CHECKPOINT` Reset**: Scans user-uploaded (`.user_uploaded/*`) and tool-loaded (`.system_generated/logs/media/*`) images, videos, audio, and PDFs accumulated since the latest `CHECKPOINT`.
@@ -105,7 +105,7 @@ Lists all installed Azure Suite plugins in one place and lets you toggle each pl
 - **Zero-Waste Hot-Sync Across All Models**: `SessionStart` and `PreInvocation` track content hashes per conversation for both native and external models—returning empty `{}` (zero tokens, Prompt Cache intact) when unchanged, and injecting the diff summary + latest rules once on the next turn of existing sessions when modified.
 
 ### 6. Azure Suite Left-Sidebar Shortcut Hub
-- Displays all 9 installed Azure Suite plugins at the bottom of the panel with individual switches to show or hide each plugin's left-sidebar shortcut.
+- Displays all 10 installed Azure Suite plugins (including Azure Drop) at the bottom of the panel with individual switches to show or hide each plugin's left-sidebar shortcut.
 
 ### 7. Unified Azure Suite UI
 - **Neko Glass UI & Shared Theme Center**: Dark/light mode, custom glass dropdowns (`AzureSelect`), 6 official theme presets + dual custom pickers + 4 shared custom slots, standalone `Web UI`, and GitHub Release update checks.
